@@ -11,7 +11,7 @@ class Fetcher():
     This is a superclass for all fetchers.
 
     Fetchers allow the user to retrieve test data from a data source and output
-    it in a standard format for use by other tools in the library.
+    as an Evaluation for use by other tools in the library.
     """
 
     def _download(self) -> Any:
@@ -38,7 +38,8 @@ class Fetcher():
 
 class HydraFetcher(Fetcher):
     """
-    Download and preprocess test results from `hydra.vtr.tools`.
+    Represents a downloader and preprocessor of test results from
+    `hydra.vtr.tools`.
 
     Attributes:
         eval_num: A non-negative integer for the evaluation number to download,
@@ -113,41 +114,33 @@ class HydraFetcher(Fetcher):
         return pd.DataFrame(processed_data).dropna(axis=1, how='all')
 
 
-# class GCSFetcher(Fetcher):
-#     """
-#     Download and preprocess test results from Google Cloud Storage.
+class JSONFetcher(Fetcher):
+    """
+    Represents a loader and preprocessor of test results from local storage.
 
-#     Attributes:
-#         gcs_url: A URL pointing to a Feather file stored on Google Cloud
-#             Storage.
-#         mapping: An optional dictionary mapping input column names to output
-#             column names. If empty, does not remap the fetched data.
-#     """
+    Attributes:
+        path: A string file path pointing to the dataframe JSON file.
+        mapping: An optional dictionary mapping input column names to output
+            column names. If empty, does not remap the fetched data.
+    """
 
-#     def __init__(self, gcs_url: str, mapping: dict = None) -> None:
-#         """
-#         Inits GCSFetcher with gcs_url and mapping.
-#         """
-#         self.gcs_url = gcs_url
-#         self.mapping = mapping
+    def __init__(self, path: str, mapping: dict = None) -> None:
+        """
+        Inits FeatherFetcher with path and mapping.
+        """
+        self.path = path
+        self.mapping = mapping
 
-#     def _download(self) -> Any:
-#         """
-#         Retrieves evaluation data over the internet.
-#         """
-#         raise NotImplementedError
+    def _download(self) -> str:
+        """
+        Retrieves evaluation data over the internet.
+        """
+        return self.path
 
-#     def _preprocess(self, data: Any) -> pd.DataFrame:
-#         """
-#         Given the downloaded data, process the data and return the resulting
-#         dataframe.
-#         """
-#         raise NotImplementedError
-
-#     def get_evaluation(self) -> Evaluation:
-#         """
-#         Returns an Evaluation that represents the fetched data.
-#         """
-#         data = self._download()
-#         df = self._preprocess(data)
-#         return Evaluation(df)
+    def _preprocess(self, path: str) -> pd.DataFrame:
+        """
+        Given the path, load the data in pandas, process the data, and return
+        the resulting dataframe.
+        """
+        df = pd.read_json(path)
+        return df.filter(items=self.mapping.keys()).rename(columns=self.mapping)

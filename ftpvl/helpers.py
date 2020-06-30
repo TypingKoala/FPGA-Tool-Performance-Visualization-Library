@@ -68,4 +68,3 @@ def get_actual_freq(obj: dict, hydra_clock_names: list = None):
             return rescale_actual_freq(obj[shortest_clock_name])
         else:
             return None
-    
