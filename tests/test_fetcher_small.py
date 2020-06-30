@@ -6,9 +6,9 @@ import unittest
 import pandas as pd
 import requests_mock
 
-from pandas.testing import assert_frame_equal, assert_series_equal
+from pandas.testing import assert_frame_equal, assert_series_equal, assert_index_equal
 
-from ftpvl import HydraFetcher
+from ftpvl import HydraFetcher, JSONFetcher
 
 class TestHydraFetcherSmall(unittest.TestCase):
     """
@@ -180,11 +180,53 @@ class TestJSONFetcherSmall(unittest.TestCase):
         get_evaluation()
     """
 
-    def test_gcsfetcher_init(self):
-        raise NotImplementedError
+    def test_jsonfetcher_init(self):
+        """
+        Calling init should save the arguments as an instance variable.
+        """
+        fetcher = JSONFetcher(
+            path="tests/sample_data/dataframe_small.json",
+            mapping={"a": "c", "b": "d"}
+        )
 
-    def test_gcsfetcher_get_evaluation_eval_num(self):
-        raise NotImplementedError
+        self.assertEqual(fetcher.path, "tests/sample_data/dataframe_small.json")
+        self.assertEqual(fetcher.mapping, {"a": "c", "b": "d"})
 
-    def test_gcsfetcher_get_evaluation_mapping(self):
-        raise NotImplementedError
+    def test_jsonfetcher_get_evaluation(self):
+        """
+        get_evaluation() should return an Evaluation corresponding to the small
+        dataset.
+        """
+        fetcher = JSONFetcher('tests/sample_data/dataframe_small.json')
+        result = fetcher.get_evaluation().get_df()
+
+        expected_projects = pd.Series(
+            ["ibex", "oneblink", "litex-linux", "oneblink", "litex-linux"],
+            name="project"
+        )
+        assert_series_equal(result["project"], expected_projects)
+
+
+    def test_jsonfetcher_get_evaluation_mapping(self):
+        """
+        get_evaluation() should return an Evaluation corresponding to the small
+        dataset and mapping.
+
+        Tests whether exclusion and renaming works when remapping.
+        """
+        fetcher = JSONFetcher(
+            'tests/sample_data/dataframe_small.json',
+            mapping={"project": "proj"}
+        )
+        result = fetcher.get_evaluation().get_df()
+
+        # test renaming
+        expected_projects = pd.Series(
+            ["ibex", "oneblink", "litex-linux", "oneblink", "litex-linux"],
+            name="proj"
+        )
+        assert_series_equal(result["proj"], expected_projects)
+
+        # test exclusion
+        expected_columns = pd.Index(["proj"]) # should not have other columns
+        assert_index_equal(result.columns, expected_columns)

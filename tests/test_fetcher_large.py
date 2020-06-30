@@ -7,9 +7,9 @@ import json
 import pandas as pd
 import requests_mock
 
-from pandas.testing import assert_frame_equal
+from pandas.testing import assert_frame_equal, assert_series_equal
 
-from ftpvl import HydraFetcher
+from ftpvl import HydraFetcher, JSONFetcher
 
 
 class TestHydraFetcherLarge(unittest.TestCase):
@@ -92,17 +92,103 @@ class TestHydraFetcherLarge(unittest.TestCase):
                     # TODO: more tests on real data
 
 
-class TestGCSFetcherLarge(unittest.TestCase):
+class TestJSONFetcherLarge(unittest.TestCase):
     """
     Testing by partition.
 
-    GCSFetcher:
-        __init__(url, mapping_dict)
+    JSONFetcher:
+        __init__(path, mapping_dict)
         get_evaluation()
     """
 
-    def test_gcsfetcher_init(self):
-        raise NotImplementedError
+    def test_jsonfetcher_init(self):
+        """
+        Calling init should save the arguments as an instance variable.
+        """
+        df_mappings = {
+            "project": "project",
+            "device": "device",
+            "toolchain": "toolchain",
+            "clock_actual_frequency": "freq",
+            "#BRAM": "bram",
+            "#CARRY": "carry",
+            "#DFF": "dff",
+            "#IOB": "iob",
+            "#LUT": "lut",
+            "#PLL": "pll",
+            "synthesis_time": "synthesis",
+            "packing_time": "pack",
+            "placement_time": "place",
+            "routing_time": "route",
+            "fasm_time": "fasm",
+            "bitstream_time": "bitstream",
+            "total_time": "total"
+        }
 
-    def test_gcsfetcher_get_evaluation(self):
-        raise NotImplementedError
+        path = 'tests/sample_data/dataframe.json'
+        fetcher = JSONFetcher(path, df_mappings)
+
+        assert fetcher.path == path
+        assert fetcher.mapping == df_mappings
+
+    def test_jsonfetcher_get_evaluation(self):
+        """
+        get_evaluation() should return an Evaluation corresponding to the small
+        dataset.
+        """
+        fetcher = JSONFetcher('tests/sample_data/dataframe.json')
+        result = fetcher.get_evaluation().get_df()
+
+        expected_projects = pd.Series(
+            ['ibex',
+             'oneblink',
+             'litex-linux',
+             'oneblink',
+             'litex-linux',
+             'picosoc-spimemio-wrap',
+             'oneblink',
+             'picosoc-simpleuart-wrap',
+             'picosoc-simpleuart-wrap',
+             'murax',
+             'oneblink',
+             'blinky',
+             'vexriscv-verilog',
+             'picosoc-spimemio-wrap',
+             'hamsternz-hdmi',
+             'picosoc-wrap',
+             'blinky',
+             'oneblink',
+             'vexriscv-smp',
+             'blinky',
+             'oneblink',
+             'picosoc-wrap',
+             'vexriscv-verilog',
+             'picosoc-wrap',
+             'vexriscv-verilog',
+             'picosoc-simpleuart-wrap',
+             'oneblink',
+             'vexriscv-verilog',
+             'blinky',
+             'blinky',
+             'picorv32-wrap',
+             'litex-linux',
+             'litex-linux',
+             'picorv32-wrap',
+             'oneblink',
+             'oneblink',
+             'picosoc-spimemio-wrap',
+             'murax',
+             'picorv32-wrap',
+             'oneblink',
+             'ibex',
+             'murax',
+             'picorv32-wrap',
+             'blinky',
+             'oneblink',
+             'picorv32-wrap',
+             'picorv32-wrap',
+             'oneblink',
+             'oneblink'],
+            name="project"
+        )
+        assert_series_equal(result["project"], expected_projects)

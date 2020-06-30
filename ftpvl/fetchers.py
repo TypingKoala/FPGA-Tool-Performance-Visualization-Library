@@ -143,4 +143,8 @@ class JSONFetcher(Fetcher):
         the resulting dataframe.
         """
         df = pd.read_json(path)
-        return df.filter(items=self.mapping.keys()).rename(columns=self.mapping)
+        if self.mapping is None:
+            return df
+        else:
+            return (df.filter(items=self.mapping.keys())
+                    .rename(columns=self.mapping))
