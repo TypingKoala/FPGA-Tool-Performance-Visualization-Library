@@ -44,7 +44,8 @@ class HydraFetcher(Fetcher):
     Attributes:
         eval_num: A non-negative integer for the evaluation number to download,
             with `0` being the latest evaluation
-        mapping: A dictionary mapping input column names to output column names.
+        mapping: An optional dictionary mapping input column names to output
+            column names. If empty, does not remap the fetched data.
     """
 
     def __init__(self, eval_num: int = 0, mapping: dict = None) -> None:
