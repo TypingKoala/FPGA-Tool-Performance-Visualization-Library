@@ -1,5 +1,7 @@
 """ Package init file """
 
+import ftpvl.helpers
+
 from .evaluation import Evaluation
 from .fetchers import Fetcher, HydraFetcher
 from .processors import Processor, MinusOne, StandardizeTypes
