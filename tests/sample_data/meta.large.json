@@ -1,0 +1,62 @@
+{
+    "board": "basys3",
+    "build": null,
+    "build_type": null,
+    "carry": false,
+    "cmds": [],
+    "date": "2020-06-25T20:32:06",
+    "design": "oneblink_vpr_xc7_a35tcpg236-1_basys3_pcf_carry-n",
+    "device": "a35t",
+    "family": "xc7",
+    "max_freq": {
+        "clk": {
+            "actual": 185246590.99960914,
+            "hold_violation": 0.0,
+            "met": null,
+            "requested": 0.0,
+            "setup_violation": 0.0
+        }
+    },
+    "optstr": "pcf_carry-n",
+    "package": "cpg236-1",
+    "parameters": null,
+    "pcf": "basys3.pcf",
+    "project": "oneblink",
+    "resources": {
+        "BRAM": "0",
+        "CARRY": "6",
+        "DFF": "24",
+        "GLB": null,
+        "IOB": "2",
+        "LUT": "1",
+        "PLL": "0"
+    },
+    "runtime": {
+        "bitstream": 1.316,
+        "checkpoint": null,
+        "fasm": 26.683,
+        "fasm2bels": null,
+        "nop": 0.003,
+        "optimization": null,
+        "packing": 0.17,
+        "placement": 1.41,
+        "prepare": 0.121,
+        "reports": null,
+        "routing": 1.43,
+        "synthesis": 7.54,
+        "total": 79.327
+    },
+    "sdc": null,
+    "seed": null,
+    "sources": [
+        "./src/oneblink/oneblink.v"
+    ],
+    "strategy": null,
+    "toolchain": "vpr",
+    "top": "top",
+    "versions": {
+        "vpr": "Version: 8.1.0-dev+unkown, Revision: unkown",
+        "yosys": "Yosys 0.9+932 (git sha1 2e8d6ec0b0, g++ 9.2.0 -fPIC -Os)"
+    },
+    "xdc": null
+}
