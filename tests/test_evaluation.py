@@ -4,7 +4,8 @@
 import unittest
 
 import pandas as pd
-from ftpvl import Evaluation, MinusOne
+from ftpvl.evaluation import Evaluation
+from ftpvl.processors import MinusOne
 
 class TestEvaluation(unittest.TestCase):
     """

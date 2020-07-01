@@ -9,7 +9,7 @@ import requests_mock
 
 from pandas.testing import assert_frame_equal, assert_series_equal
 
-from ftpvl import HydraFetcher, JSONFetcher
+from ftpvl.fetchers import HydraFetcher, JSONFetcher
 
 
 class TestHydraFetcherLarge(unittest.TestCase):

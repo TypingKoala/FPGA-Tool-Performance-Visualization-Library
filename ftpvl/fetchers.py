@@ -3,7 +3,7 @@ from typing import Any, List, Dict
 import requests
 
 import pandas as pd
-from ftpvl import Evaluation
+from ftpvl.evaluation import Evaluation
 import ftpvl.helpers as Helpers
 
 class Fetcher():

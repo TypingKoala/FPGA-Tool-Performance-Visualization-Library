@@ -3,14 +3,15 @@
 import pandas as pd
 from pandas.testing import assert_frame_equal, assert_series_equal
 
-from ftpvl import (
+from ftpvl.processors import (
     AddNormalizedColumn,
     CleanDuplicates,
-    Evaluation,
     MinusOne,
     StandardizeTypes,
     ExpandColumn
 )
+
+from ftpvl.evaluation import Evaluation
 
 
 class TestProcessor:
