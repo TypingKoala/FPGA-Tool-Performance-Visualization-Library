@@ -93,17 +93,13 @@ class CleanDuplicates(Processor):
     ):
         """Initializes CleanDuplicates processor.
 
-        Parameters:
-
-        duplicate_col_names (List[str]): column names to use when finding
-            duplicates
-
-        sort_col_names (List[str], optional): column names to sort by. Defaults
-            to [].
-
-        reverse_sort (bool, optional): If True, sorts in ascending order.
-            Defaults to False.
-
+        Args:
+            duplicate_col_names (List[str]): column names to use when finding
+                duplicates
+            sort_col_names (List[str], optional): column names to sort by.
+                Defaults to None.
+            reverse_sort (bool, optional): If True, sorts in ascending order.
+                Defaults to False.
         """
         self._duplicate_col_names = duplicate_col_names
         self._sort_col_names = sort_col_names
@@ -123,9 +119,38 @@ class CleanDuplicates(Processor):
             )
             return Evaluation(new_df)
 
+class AddNormalizedColumn(Processor):
+    """
+    Processor that groups rows by a column, calculates the maximum of the
+    specified column, and adds a new column with the normalized values of the
+    row compared to the max.
+    """
+    def __init__(self, groupby: str, input_col_name: str, output_col_name: str):
+        """Initializes the AddNormalizedColumn processor.
 
-# class AddRelativeFrequency(Processor):
-#     raise NotImplementedError
+        Args:
+            groupby (str): the column to group by
+            input_col_name (str): the input column to normalize
+            output_col_name (str): the column to write the normalized values to
+        """
+        self._groupby = groupby
+        self._input_col_name = input_col_name
+        self._output_col_name = output_col_name
+
+    def _normalize(self, df):
+        """
+        Given a dataframe, find the max value of the input col name and
+        create a new column with the normalized value of each row
+        """
+        max_val = df[self._input_col_name].max()
+        df[self._output_col_name] = df[self._input_col_name] / max_val
+        return df
+
+    def process(self, input_eval: Evaluation) -> Evaluation:
+        df = input_eval.get_df()
+        new_df = df.groupby(self._groupby).apply(self._normalize)
+
+        return Evaluation(new_df)
 
 
 # class ExpandToolchain(Processor):

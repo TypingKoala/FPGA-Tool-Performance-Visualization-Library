@@ -1,17 +1,25 @@
 """ Tests for Processors """
 
 import pandas as pd
-from pandas.testing import assert_series_equal, assert_frame_equal
-from ftpvl import Evaluation, StandardizeTypes, MinusOne, CleanDuplicates
+from pandas.testing import assert_frame_equal, assert_series_equal
 
-class TestProcessor():
+from ftpvl import (
+    AddNormalizedColumn,
+    CleanDuplicates,
+    Evaluation,
+    MinusOne,
+    StandardizeTypes,
+)
+
+
+class TestProcessor:
     """
     Testing by partition.
 
     MinusOne()
     StandardizeTypes()
     CleanDuplicates()
-    AddRelativeFrequency()
+    AddNormalizedColumn()
     ExpandToolchain()
     Reindex()
     SortIndex()
@@ -37,17 +45,13 @@ class TestProcessor():
 
     def test_standardizetypes(self):
         """ Test whether types are standardized """
-        types = {
-            "a": float
-        }
+        types = {"a": float}
         df = pd.DataFrame({"a": [1, 2, 3, 4, 5]})
         eval1 = Evaluation(df)
 
         assert eval1.get_df().dtypes["a"] == int
 
-        pipeline = [
-            StandardizeTypes(types)
-        ]
+        pipeline = [StandardizeTypes(types)]
 
         result = eval1.process(pipeline)
 
@@ -55,13 +59,15 @@ class TestProcessor():
 
     def test_cleanduplicates_no_duplicates(self):
         """ Test for evaluation that has no duplicates in specified column """
-        df = pd.DataFrame([
-            {"a": 1, "b": 1, "c": 5},
-            {"a": 1, "b": 2, "c": 4},
-            {"a": 3, "b": 3, "c": 3},
-            {"a": 4, "b": 4, "c": 2},
-            {"a": 5, "b": 5, "c": 1},
-        ])
+        df = pd.DataFrame(
+            [
+                {"a": 1, "b": 1, "c": 5},
+                {"a": 1, "b": 2, "c": 4},
+                {"a": 3, "b": 3, "c": 3},
+                {"a": 4, "b": 4, "c": 2},
+                {"a": 5, "b": 5, "c": 1},
+            ]
+        )
         eval1 = Evaluation(df)
 
         # test no duplicates
@@ -71,19 +77,21 @@ class TestProcessor():
 
     def test_cleanduplicates_one_col(self):
         """ Test for evaluation that has duplicate in one column """
-        df = pd.DataFrame([
-            {"a": 1, "b": 1, "c": 5},
-            {"a": 1, "b": 2, "c": 4},
-            {"a": 3, "b": 3, "c": 3},
-            {"a": 4, "b": 4, "c": 2},
-            {"a": 5, "b": 5, "c": 1},
-        ])
+        df = pd.DataFrame(
+            [
+                {"a": 1, "b": 1, "c": 5},
+                {"a": 1, "b": 2, "c": 4},
+                {"a": 3, "b": 3, "c": 3},
+                {"a": 4, "b": 4, "c": 2},
+                {"a": 5, "b": 5, "c": 1},
+            ]
+        )
         eval1 = Evaluation(df)
 
         pipeline = [CleanDuplicates(["a"])]
         result = eval1.process(pipeline).get_df()
         expected = df.drop(1)
-        
+
         assert_frame_equal(result, expected)
 
     def test_cleanduplicates_multi_col(self):
@@ -91,13 +99,15 @@ class TestProcessor():
         Test for evaluation that doesn't have duplicates when comparing
         more than one column
         """
-        df = pd.DataFrame([
-            {"a": 1, "b": 1, "c": 5},
-            {"a": 1, "b": 2, "c": 4},
-            {"a": 3, "b": 3, "c": 3},
-            {"a": 4, "b": 4, "c": 2},
-            {"a": 5, "b": 5, "c": 1},
-        ])
+        df = pd.DataFrame(
+            [
+                {"a": 1, "b": 1, "c": 5},
+                {"a": 1, "b": 2, "c": 4},
+                {"a": 3, "b": 3, "c": 3},
+                {"a": 4, "b": 4, "c": 2},
+                {"a": 5, "b": 5, "c": 1},
+            ]
+        )
         eval1 = Evaluation(df)
         pipeline = [CleanDuplicates(["a", "b"])]
         result2 = eval1.process(pipeline).get_df()
@@ -107,28 +117,54 @@ class TestProcessor():
         """
         Test by sorting before removing duplicate.
         """
-        df = pd.DataFrame([
-            {"a": 1, "b": 1, "c": 5},
-            {"a": 1, "b": 2, "c": 4},
-            {"a": 3, "b": 3, "c": 3},
-            {"a": 4, "b": 4, "c": 2},
-            {"a": 5, "b": 5, "c": 1},
-        ])
+        df = pd.DataFrame(
+            [
+                {"a": 1, "b": 1, "c": 5},
+                {"a": 1, "b": 2, "c": 4},
+                {"a": 3, "b": 3, "c": 3},
+                {"a": 4, "b": 4, "c": 2},
+                {"a": 5, "b": 5, "c": 1},
+            ]
+        )
         eval1 = Evaluation(df)
 
         pipeline = [CleanDuplicates(["a"], ["c"])]
-        result = eval1.process(pipeline).get_df() # will remove idx 1
+        result = eval1.process(pipeline).get_df()  # will remove idx 1
         expected = df.drop(1)
         assert_frame_equal(result, expected)
 
         pipeline = [CleanDuplicates(["a"], ["c"], reverse_sort=True)]
-        result = eval1.process(pipeline).get_df() # will remove idx 0
+        result = eval1.process(pipeline).get_df()  # will remove idx 0
         expected = df.drop(0).sort_index(level=0, ascending=False)
         assert_frame_equal(result, expected)
 
-    def test_addrelativefrequency(self):
-        """ Test whether relative frequency is added """
-        raise NotImplementedError
+    def test_addnormalizedcolumn(self):
+        """ Test whether normalized column is added """
+        df = pd.DataFrame(
+            [
+                {"group": "a", "value": 10},
+                {"group": "a", "value": 5},
+                {"group": "a", "value": 3},
+                {"group": "b", "value": 100},
+                {"group": "b", "value": 31},
+            ]
+        )
+        eval1 = Evaluation(df)
+
+        pipeline = [AddNormalizedColumn("group", "value", "normalized")]
+        result = eval1.process(pipeline).get_df()
+        expected = pd.DataFrame(
+            [
+                {"group": "a", "value": 10, "normalized": 1.0},
+                {"group": "a", "value": 5, "normalized": 0.5},
+                {"group": "a", "value": 3, "normalized": 0.3},
+                {"group": "b", "value": 100, "normalized": 1.0},
+                {"group": "b", "value": 31, "normalized": 0.31},
+            ]
+        )
+
+        assert_frame_equal(result, expected)
+
 
     def test_expandtoolchain(self):
         """ Test whether the toolchain column is expanded """
