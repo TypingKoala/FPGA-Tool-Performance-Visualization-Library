@@ -1,6 +1,7 @@
 """ This module defines visualizers for ftpvl """
 
-from ftpvl import Evaluation, Style
+from ftpvl.evaluation import Evaluation
+from ftpvl.styles import Style
 
 class Visualizer():
     """

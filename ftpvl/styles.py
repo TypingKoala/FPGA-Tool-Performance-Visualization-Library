@@ -1,6 +1,7 @@
 """ This module defines styles for ftpvl """
 from typing import Callable
-from ftpvl import Processor, Evaluation
+from ftpvl.evaluation import Evaluation
+from ftpvl.processors import Processor
 
 class Style(Processor):
     """
