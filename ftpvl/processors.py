@@ -1,14 +1,16 @@
 """ This module defines processors for ftpvl. """
 
+from typing import List
 from ftpvl import Evaluation
 
-class Processor():
+
+class Processor:
     """
     Superclass for all processors that can be applied to Evaluation instances.
 
     All processors have a method process() that take an Evaluation instance and
     returns an Evaluation that has been processed in some way. The behavior of
-    this method is specified by the specific subclass and its parameters. 
+    this method is specified by the specific subclass and its parameters.
     """
 
     def process(self, input_eval: Evaluation) -> Evaluation:
@@ -19,12 +21,13 @@ class Processor():
         This method does not mutate the input Evaluation.
 
         Args:
-            input: an Evaluation to process
+            input_eval: an Evaluation to process
 
         Returns:
             a processed Evaluation object
         """
         raise NotImplementedError
+
 
 class MinusOne(Processor):
     """
@@ -38,6 +41,7 @@ class MinusOne(Processor):
     def process(self, input_eval: Evaluation) -> Evaluation:
         return Evaluation(input_eval.get_df() - 1)
 
+
 class StandardizeTypes(Processor):
     """
     Processor that casts metrics in an Evaluation to the specified type.
@@ -45,27 +49,96 @@ class StandardizeTypes(Processor):
     The type of each metric in an Evaluation is inferred after
     fetching. This processor accepts a dictionary of types and casts the
     Evaluation to those types.
-
-    Attributes:
-        types: a dictionary mapping metric names to a type (the type must be
-            supported by Pandas)
     """
 
     def __init__(self, types: dict):
-        """ Overrides Processor.__init__() """
-        self.types = types
+        """Initializes StandardizeTypes processor.
+
+        Args:
+            types (dict): A dictionary mapping column names to types.
+        """
+        self._types = types
 
     def process(self, input_eval: Evaluation) -> Evaluation:
-        raise NotImplementedError
+        df = input_eval.get_df()
 
-# class CleanDuplicates(Processor):
+        # if int, we might need to convert to float first
+        # (e.g. int(float("6.0")))
+        if int in self._types.values():
+            # create dictionary replacing int with float
+            pre_df_types = {
+                k: (v if v != int else float) for k, v in self._types.items()
+            }
+            df = df.astype(pre_df_types)
+
+        new_df = df.astype(self._types)
+        return Evaluation(new_df)
+
+
+class CleanDuplicates(Processor):
+    """
+    Processor that removes duplicate rows from an Evaluation dataframe based on
+    one or more values in each row.
+
+    By default, the first instance of a duplicate is retained, and all others
+    are removed. You can optionally specify columns to sort by and which way to
+    sort, which provides fine-grained control over which rows are removed.
+    """
+
+    def __init__(
+        self,
+        duplicate_col_names: List[str],
+        sort_col_names: List[str] = None,
+        reverse_sort: bool = False,
+    ):
+        """Initializes CleanDuplicates processor.
+
+        Parameters:
+
+        duplicate_col_names (List[str]): column names to use when finding
+            duplicates
+
+        sort_col_names (List[str], optional): column names to sort by. Defaults
+            to [].
+
+        reverse_sort (bool, optional): If True, sorts in ascending order.
+            Defaults to False.
+
+        """
+        self._duplicate_col_names = duplicate_col_names
+        self._sort_col_names = sort_col_names
+        self._reverse_sort = reverse_sort
+
+    def process(self, input_eval: Evaluation) -> Evaluation:
+        if self._sort_col_names is None:
+            new_df = input_eval.get_df().drop_duplicates(
+                subset=self._duplicate_col_names
+            )
+            return Evaluation(new_df)
+        else:
+            new_df = (
+                input_eval.get_df()
+                .sort_values(by=self._sort_col_names, ascending=self._reverse_sort)
+                .drop_duplicates(subset=self._duplicate_col_names)
+            )
+            return Evaluation(new_df)
+
 
 # class AddRelativeFrequency(Processor):
+#     raise NotImplementedError
+
 
 # class ExpandToolchain(Processor):
+#     raise NotImplementedError
+
 
 # class Reindex(Processor):
+#     raise NotImplementedError
+
 
 # class SortIndex(Processor):
+#     raise NotImplementedError
+
 
 # class NormalizeAround(Processor):
+#     raise NotImplementedError
