@@ -1,6 +1,7 @@
 """ This module defines processors for ftpvl. """
 
-from typing import List
+from typing import List, Dict
+import pandas as pd
 from ftpvl import Evaluation
 
 
@@ -119,12 +120,14 @@ class CleanDuplicates(Processor):
             )
             return Evaluation(new_df)
 
+
 class AddNormalizedColumn(Processor):
     """
     Processor that groups rows by a column, calculates the maximum of the
     specified column, and adds a new column with the normalized values of the
     row compared to the max.
     """
+
     def __init__(self, groupby: str, input_col_name: str, output_col_name: str):
         """Initializes the AddNormalizedColumn processor.
 
@@ -137,7 +140,7 @@ class AddNormalizedColumn(Processor):
         self._input_col_name = input_col_name
         self._output_col_name = output_col_name
 
-    def _normalize(self, df):
+    def _normalize(self, df: pd.DataFrame):
         """
         Given a dataframe, find the max value of the input col name and
         create a new column with the normalized value of each row
@@ -153,8 +156,51 @@ class AddNormalizedColumn(Processor):
         return Evaluation(new_df)
 
 
-# class ExpandToolchain(Processor):
-#     raise NotImplementedError
+class ExpandColumn(Processor):
+    """
+    Processor that turns one column into more than one column by mapping values
+    of a column to multiple values.
+    """ ""
+
+    def __init__(self, input_col_name: str, output_col_names: List[str], mapping: dict):
+        """Initializes the ExpandColumn processor.
+
+        Args:
+            input_col_name (str): the column name to map from
+            output_col_names (List[str]): the column names to map to
+            mapping (dict): a dictionary mapping a column name to map from to a
+                list of column names to map to
+        """
+        self._input_col_name = input_col_name
+        self._output_col_names = output_col_names
+        self._mapping = mapping
+
+    def _expansion(self, df: pd.DataFrame):
+        """
+        Given a dataframe that contains only one unique value in
+        _input_col_name, writes new columns as defined by _output_col_names and
+        _mapping and returns the new dataframe
+        """
+        group_value = df[self._input_col_name].iloc[0]
+
+        # check for invalid input
+        assert group_value in self._mapping.keys(), f"{group_value} not in mapping"
+        assert len(self._output_col_names) == len(
+            self._mapping[group_value]
+        ), f"{group_value} mapping length does not equal output_col_name length"
+
+        for output_idx in range(len(self._output_col_names)):
+            df[self._output_col_names[output_idx]] = self._mapping[group_value][
+                output_idx
+            ]
+
+        return df
+
+    def process(self, input_eval: Evaluation) -> Evaluation:
+        df = input_eval.get_df()
+        new_df = df.groupby(self._input_col_name).apply(self._expansion)
+
+        return Evaluation(new_df)
 
 
 # class Reindex(Processor):

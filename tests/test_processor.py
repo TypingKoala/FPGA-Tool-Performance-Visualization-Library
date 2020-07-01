@@ -9,6 +9,7 @@ from ftpvl import (
     Evaluation,
     MinusOne,
     StandardizeTypes,
+    ExpandColumn
 )
 
 
@@ -73,7 +74,7 @@ class TestProcessor:
         # test no duplicates
         pipeline = [CleanDuplicates(["b"])]
         result = eval1.process(pipeline).get_df()
-        assert_frame_equal(result, df)
+        assert_frame_equal(result, df, check_like=True)
 
     def test_cleanduplicates_one_col(self):
         """ Test for evaluation that has duplicate in one column """
@@ -92,7 +93,7 @@ class TestProcessor:
         result = eval1.process(pipeline).get_df()
         expected = df.drop(1)
 
-        assert_frame_equal(result, expected)
+        assert_frame_equal(result, expected, check_like=True)
 
     def test_cleanduplicates_multi_col(self):
         """
@@ -111,7 +112,7 @@ class TestProcessor:
         eval1 = Evaluation(df)
         pipeline = [CleanDuplicates(["a", "b"])]
         result2 = eval1.process(pipeline).get_df()
-        assert_frame_equal(result2, df)
+        assert_frame_equal(result2, df, check_like=True)
 
     def test_cleanduplicates_sorting(self):
         """
@@ -131,12 +132,12 @@ class TestProcessor:
         pipeline = [CleanDuplicates(["a"], ["c"])]
         result = eval1.process(pipeline).get_df()  # will remove idx 1
         expected = df.drop(1)
-        assert_frame_equal(result, expected)
+        assert_frame_equal(result, expected, check_like=True)
 
         pipeline = [CleanDuplicates(["a"], ["c"], reverse_sort=True)]
         result = eval1.process(pipeline).get_df()  # will remove idx 0
         expected = df.drop(0).sort_index(level=0, ascending=False)
-        assert_frame_equal(result, expected)
+        assert_frame_equal(result, expected, check_like=True)
 
     def test_addnormalizedcolumn(self):
         """ Test whether normalized column is added """
@@ -166,9 +167,37 @@ class TestProcessor:
         assert_frame_equal(result, expected)
 
 
-    def test_expandtoolchain(self):
-        """ Test whether the toolchain column is expanded """
-        raise NotImplementedError
+    def test_expandcolumn(self):
+        """ Test whether the column is expanded """
+        df = pd.DataFrame(
+            [
+                {"group": "a", "value": 10},
+                {"group": "a", "value": 5},
+                {"group": "a", "value": 3},
+                {"group": "b", "value": 100},
+                {"group": "b", "value": 31},
+            ]
+        )
+        eval1 = Evaluation(df)
+
+        mapping = {
+            "a": ("a", "x"),
+            "b": ("b", "y"),
+        }
+
+        pipeline = [ExpandColumn("group", ["group1", "group2"], mapping)]
+        result = eval1.process(pipeline).get_df()
+        expected = pd.DataFrame(
+            [
+                {"group": "a", "group1": "a", "group2": "x", "value": 10},
+                {"group": "a", "group1": "a", "group2": "x", "value": 5},
+                {"group": "a", "group1": "a", "group2": "x", "value": 3},
+                {"group": "b", "group1": "b", "group2": "y", "value": 100},
+                {"group": "b", "group1": "b", "group2": "y", "value": 31},
+            ]
+        )
+
+        assert_frame_equal(result, expected, check_like=True)
 
     def test_reindex(self):
         """ Test whether the dataframe was reindexed """

@@ -10,6 +10,7 @@ from .processors import (
     StandardizeTypes,
     CleanDuplicates,
     AddNormalizedColumn,
+    ExpandColumn,
 )
 from .styles import Style, ColorMapStyle
 from .visualizers import Visualizer, DebugVisualizer, SingleTableVisualizer
