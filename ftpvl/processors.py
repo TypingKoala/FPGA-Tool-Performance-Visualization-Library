@@ -2,7 +2,7 @@
 
 from typing import List, Dict
 import pandas as pd
-from ftpvl import Evaluation
+from ftpvl.evaluation import Evaluation
 
 
 class Processor:
@@ -203,13 +203,113 @@ class ExpandColumn(Processor):
         return Evaluation(new_df)
 
 
-# class Reindex(Processor):
-#     raise NotImplementedError
+class Reindex(Processor):
+    """
+    Processor that reassigns current columns as indices for easier
+    visualization.
+
+    Reindexing is useful for grouping similar results in the final
+    visualization.
+    """
+
+    def __init__(self, reindex_names: List[str]):
+        """Initializes Reindex processor.
+
+        Args:
+            reindex_names (List[str]): a list of column names to reindex
+        """
+        self._reindex_names = reindex_names
+
+    def process(self, input_eval: Evaluation) -> Evaluation:
+        df = input_eval.get_df()
+        new_df = df.set_index(self._reindex_names)
+        return Evaluation(new_df)
 
 
-# class SortIndex(Processor):
-#     raise NotImplementedError
+class SortIndex(Processor):
+    """
+    Processor that sorts an evaluation by indices for easier visualization.
+    """
+
+    def __init__(self, sort_names: List[str]):
+        """Initializes SortIndex processor
+
+        Args:
+            sort_names (List[str]): a list of column names to reindex
+        """
+        self._sort_names = sort_names
+
+    def process(self, input_eval: Evaluation) -> Evaluation:
+        df = input_eval.get_df()
+        new_df = df.sort_index(level=self._sort_names)
+        return Evaluation(new_df)
 
 
-# class NormalizeAround(Processor):
-#     raise NotImplementedError
+class NormalizeAround(Processor):
+    """
+    Processor that normalizes all specified values in an Evaluation around
+    a specified index value.
+
+    The Evaluation being processed must have a "project" column which can
+    be grouped
+
+    All normalized values are between 0 and 1, with 0.5 being the baseline.
+    This is useful in creating styles that show relative differences between
+    each row and the baseline.
+
+    One use is normalizing around a certain synthesis tool, such as Vivado.
+    Example: NormalizeAround({"bram": 1}, "project", "synthesis_tool", "vivado")
+    """
+
+    def __init__(
+        self,
+        normalize_direction: dict,
+        group_by: str = "project",
+        idx_name: str = "synthesis_tool",
+        idx_value: str = "vivado",
+    ):
+        """Initializes the NormalizeAround processor.
+
+        Args:
+            normalize_direction (dict): a dictionary mapping column
+                names to 1 or -1. If a value is optimized when smaller, set the
+                negation to 1. If it is optimized when larger, set the negation
+                to -1. If there is no entry, normalization is skipped.
+            group_by (str): the column name used to group results before
+                finding the baseline of the group and normalizing
+            idx_name (str): the name of the index used to find the baseline
+                result. The baseline result will become the baseline which
+                all other grouped results will be normalized by. 
+            idx_value (str): the value of the baseline result at idx_name
+        """
+        self._groupby = group_by
+        self._idx_name = idx_name
+        self._idx_value = idx_value
+
+
+        self._column_names = []
+        self._column_negations = []
+        for name, negation in normalize_direction.items():
+            self._column_names.append(name)
+            self._column_negations.append(negation)
+
+    def _normalize_around(self, df):
+        """
+        Given a dataframe, finds the first row using the vivado toolchain and
+        normalizes all other rows around it. Only affects STYLED_COLUMNS.
+        Returns the altered df.
+        """
+        is_vivado = df.index.get_level_values(self._idx_name) == self._idx_value
+        base = df.loc[is_vivado, self._column_names].iloc[0]  # vivado stats
+        scaling_factor = (df[self._column_names] - base).abs().max()
+        scaled = (df[self._column_names] - base) / scaling_factor  # between -1 and 1
+        scaled *= self._column_negations
+        offset = (scaled / 2) + 0.5  # between 0 and 1
+        df[self._column_names] = offset
+        return df
+
+    def process(self, input_eval: Evaluation) -> Evaluation:
+        df = input_eval.get_df()
+        new_df = df.groupby(self._groupby).apply(self._normalize_around)
+        return Evaluation(new_df)
+

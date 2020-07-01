@@ -1,14 +1,19 @@
 """ Tests for Processors """
 
 import pandas as pd
-from pandas.testing import assert_frame_equal, assert_series_equal
+from pandas.testing import (
+    assert_frame_equal, assert_series_equal, assert_index_equal
+)
 
 from ftpvl.processors import (
     AddNormalizedColumn,
     CleanDuplicates,
     MinusOne,
     StandardizeTypes,
-    ExpandColumn
+    ExpandColumn,
+    Reindex,
+    SortIndex,
+    NormalizeAround
 )
 
 from ftpvl.evaluation import Evaluation
@@ -167,7 +172,6 @@ class TestProcessor:
 
         assert_frame_equal(result, expected)
 
-
     def test_expandcolumn(self):
         """ Test whether the column is expanded """
         df = pd.DataFrame(
@@ -202,14 +206,157 @@ class TestProcessor:
 
     def test_reindex(self):
         """ Test whether the dataframe was reindexed """
-        raise NotImplementedError
+        df = pd.DataFrame(
+            [
+                {"group": "a", "key": "a", "value": 10},
+                {"group": "a", "key": "b", "value": 5},
+                {"group": "a", "key": "c", "value": 3},
+                {"group": "b", "key": "d", "value": 100},
+                {"group": "b", "key": "e", "value": 31},
+            ]
+        )
+        eval1 = Evaluation(df)
+
+        pipeline = [Reindex(["value"])]
+        result = eval1.process(pipeline).get_df()
+        expected_index = pd.Index([10, 5, 3, 100, 31], name="value")
+        assert_index_equal(result.index, expected_index)
+
+        pipeline = [Reindex(["group", "key"])]
+        result = eval1.process(pipeline).get_df()
+        arrays = [["a", "a", "a", "b", "b"], ["a", "b", "c", "d", "e"]]
+        expected_index = pd.MultiIndex.from_arrays(arrays, names=("group", "key"))
+        assert_index_equal(result.index, expected_index)
 
     def test_sortindex(self):
         """ Test whether the dataframe is sorted by index """
-        raise NotImplementedError
+        df = pd.DataFrame(
+            data = [
+                {"group": "a", "value": 10},
+                {"group": "a", "value": 5},
+                {"group": "a", "value": 3},
+                {"group": "b", "value": 100},
+                {"group": "b", "value": 31},
+            ],
+            index = pd.Index([
+                5,
+                4,
+                3,
+                2,
+                1,
+            ], name="idx")
+        )
+        
+        eval1 = Evaluation(df)
+        
+        pipeline = [SortIndex(["idx"])]
+        result = eval1.process(pipeline).get_df()
+        expected = pd.DataFrame(
+            data = [
+                {"group": "b", "value": 31},
+                {"group": "b", "value": 100},
+                {"group": "a", "value": 3},
+                {"group": "a", "value": 5},
+                {"group": "a", "value": 10},
+            ],
+            index = pd.Index([
+                1,
+                2,
+                3,
+                4,
+                5,
+            ], name="idx")
+        )
+        assert_frame_equal(result, expected)
+
 
     def test_normalizearound(self):
-        """ 
+        """
         Test whether all values are normalized around a certain (set of) rows
         """
-        raise NotImplementedError
+        arrays = [
+            ["blinky", "blinky", "blinky", "ibex", "ibex"],
+            ["yosys", "yosys", "vivado", "yosys", "vivado"],
+        ]
+        index = pd.MultiIndex.from_arrays(arrays, names=("project", "synthesis_tool"))
+        df = pd.DataFrame(
+            data=[
+                {"group": "b", "value": 0},
+                {"group": "b", "value": 50},
+                {"group": "b", "value": 100},
+                {"group": "a", "value": 0},
+                {"group": "a", "value": 10},
+            ],
+            index=index
+        )
+        eval1 = Evaluation(df)
+
+        normalize_direction = {
+            "value": 1
+        }
+        pipeline = [NormalizeAround(
+            normalize_direction,
+            group_by="project",
+            idx_name="synthesis_tool",
+            idx_value="vivado"
+        )]
+
+        result = eval1.process(pipeline).get_df()
+        expected = pd.DataFrame(
+            data=[
+                {"group": "b", "value": 0},
+                {"group": "b", "value": 0.25},
+                {"group": "b", "value": 0.5},
+                {"group": "a", "value": 0},
+                {"group": "a", "value": 0.5},
+            ],
+            index=index
+        )
+        assert_frame_equal(result, expected)
+
+    def test_normalizearound_negated(self):
+        """
+        Test whether all values are normalized in the correct direction based
+        on the negation.
+        """
+        arrays = [
+            ["blinky", "blinky", "blinky", "ibex", "ibex"],
+            ["yosys", "yosys", "vivado", "yosys", "vivado"],
+        ]
+        index = pd.MultiIndex.from_arrays(arrays, names=("project", "synthesis_tool"))
+        df = pd.DataFrame(
+            data=[
+                {"group": "b", "value": 0},
+                {"group": "b", "value": 50},
+                {"group": "b", "value": 100},
+                {"group": "a", "value": 0},
+                {"group": "a", "value": 10},
+            ],
+            index=index
+        )
+        eval1 = Evaluation(df)
+
+        normalize_direction = {
+            "value": -1
+        }
+        pipeline = [NormalizeAround(
+            normalize_direction,
+            group_by="project",
+            idx_name="synthesis_tool",
+            idx_value="vivado"
+        )]
+
+        result = eval1.process(pipeline).get_df()
+        expected = pd.DataFrame(
+            data=[
+                {"group": "b", "value": 1},
+                {"group": "b", "value": 0.75},
+                {"group": "b", "value": 0.5},
+                {"group": "a", "value": 1},
+                {"group": "a", "value": 0.5},
+            ],
+            index=index
+        )
+        assert_frame_equal(result, expected)
+
+
