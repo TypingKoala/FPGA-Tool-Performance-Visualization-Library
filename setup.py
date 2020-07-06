@@ -13,7 +13,7 @@ from setuptools import find_packages, setup, Command
 
 # Package meta-data.
 NAME = 'ftpvl'
-DESCRIPTION = 'A visualization library for '
+DESCRIPTION = 'A visualization library for FPGA Tool Performance'
 URL = 'https://github.com/TypingKoala/FPGA-Tool-Performance-Visualization-Library'
 EMAIL = 'me@johnnybui.com'
 AUTHOR = 'Johnny Bui'
@@ -22,7 +22,7 @@ VERSION = '0.1.0'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-    'requests', 'pandas'
+    'seaborn', 'pandas', 'jinja2'
 ]
 
 # What packages are optional?
