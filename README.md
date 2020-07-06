@@ -1,78 +1,25 @@
-# FPGA-Tool-Performance-Visualization-Library
+# FPGA Tool Performance Visualization Library (FTPVL)
+![Python application](https://github.com/TypingKoala/FPGA-Tool-Performance-Visualization-Library/workflows/Python%20application/badge.svg)
 
-Example usage: 
-```python
-# specify how to convert toolchains to synthesis_tool/pr_tool
-toolchain_map = {
-    'vpr': ('yosys', 'vpr'),
-    'vpr-fasm2bels': ('yosys', 'vpr'),
-    'yosys-vivado': ('yosys', 'vivado'),
-    'vivado': ('vivado', 'vivado'),
-    'nextpnr-ice40': ('yosys', 'nextpnr'),
-    'nextpnr-xilinx': ('yosys', 'nextpnr'),
-    'nextpnr-xilinx-fasm2bels': ('yosys', 'nextpnr')
-}
+FTPVL is a library for simplifying the data collection and visualization process
+for Symbiflow development. Although it was made with Symbiflow in mind, it is
+highly extensible for future integration with other software.
 
-df_types = {
-    "project": str,
-    "device": str,
-    "toolchain": str,
-    "freq": float,
-    "bram": int,
-    "carry": int,
-    "dff": int,
-    "iob": int,
-    "lut": int,
-    "pll": int,
-    "synthesis": float,
-    "pack": float,
-    "place": float,
-    "route": float,
-    "fasm": float,
-    "bitstream": float,
-    "total": float
-}
+## Dependencies
+The library extensively uses [Pandas](https://pandas.pydata.org/) for data
+management and processing. Other dependencies are explained below:
+* `pandas`: for data management and processing
+* `seaborn`: for colormap generation
+* `jinja2`: for visualization generation
 
-# define the pipeline to process the evaluation
-processing_pipeline = [
-    StandardizeTypes(df_types),
-    CleanDuplicates(sort=["freq"], subset=["project", "toolchain"], keep="last"),
-    AddRelativeFrequency(groupby="project"),
-    ExpandToolchain(toolchain_map),
-    Reindex(["project", "synthesis_tool", "pr_tool", "toolchain"]),
-    SortIndex(["project", "synthesis_tool"])
-]
+### Development Dependencies
+* `requests-mock`: for mocking request object for testing fetchers
+* `pylint`: for linting
+* `pytest`: testrunner
+* `coverage`: for coverage testing
+* `black`: for auto-formatting
 
-# fetch and process first eval
-eval1 = HydraFetcher(eval_num=0).get_evaluation()
-eval1 = eval1.process(processing_pipeline)
+## Example Usage
+Take a look at the notebooks below to demonstrate the functionality of FTPVL.
 
-# fetch and process second eval
-eval2 = HydraFetcher(eval_num=1).get_evaluation()
-eval2 = eval2.process(processing_pipeline)
-
-# create a color map style to define how to convert from float to CSS
-cmap = sns.diverging_palette(180, 0, s=75, l=75, sep=100, as_cmap=True)
-cmap_style = ColorMapStyler(cmap)
-
-# transform evaluations to a table of floats and apply color map style
-style_processing_pipeline = [NormalizeAround("synthesis_tool", "vivado")]
-style1 = eval1.process(style_processing_pipeline).process([cmap_style])
-style2 = eval1.process(style_processing_pipeline).process([cmap_style])
-
-# create visualizer and display with version_info
-viz1 = SingleTableVisualizer(eval1, style1, version_info=True)
-viz1.display()
-
-# create visualizer and display without version_info
-viz2 = SingleTableVisualizer(eval2, style2, version_info=False)
-viz2.display()
-
-# create style for a visualization that compares two evals
-comparison_style_pipeline = [CompareTwo(eval1, eval2)]
-style_compare = eval2.process(comparison_style_pipeline).get_style(cmap_style)
-
-# create visualizer and display table that compares two evals
-compare_viz = TwoTableVisualizer(eval1, eval2,  version_info=True)
-compare_viz.display()
-```
+1. [Using `HydraFetcher` and `DebugVisualizer`](https://colab.research.google.com/drive/1BIQ-iulDFpzcve7lGJPwLePJ5ETBJ6Ut?usp=sharing)
