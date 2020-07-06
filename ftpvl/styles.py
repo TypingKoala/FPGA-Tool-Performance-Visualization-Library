@@ -2,6 +2,7 @@
 from typing import Callable
 from ftpvl.evaluation import Evaluation
 from ftpvl.processors import Processor
+from ftpvl.helpers import get_styling
 
 class Style(Processor):
     """
@@ -29,4 +30,6 @@ class ColorMapStyle(Style):
         self.cmap = cmap
 
     def process(self, input_eval: Evaluation) -> Evaluation:
-        raise NotImplementedError
+        df = input_eval.get_df()
+        new_df = df.applymap(lambda x: get_styling(x, self.cmap))
+        return Evaluation(new_df)

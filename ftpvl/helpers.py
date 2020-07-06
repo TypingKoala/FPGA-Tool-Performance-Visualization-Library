@@ -68,3 +68,15 @@ def get_actual_freq(obj: dict, hydra_clock_names: list = None):
             return rescale_actual_freq(obj[shortest_clock_name])
         else:
             return None
+
+def get_styling(val, cmap):
+    """
+    Given a value, returns a CSS string with the background-color set to the color
+    in the cmap, or an empty CSS string if the value is not a float between 0 and 1.
+    """
+    if isinstance(val, float) and 0 <= val <= 1:
+        color = tuple([int(x * 255) for x in cmap(val)[:-1]])
+        hex_color = '#%02x%02x%02x' % color # convert to hex format #FFFFFF
+        return "background-color: {}".format(hex_color)
+    else:
+        return ""
