@@ -1,10 +1,13 @@
 """ This module defines fetchers for ftpvl. """
-from typing import Any, List, Dict
-import requests
+import json
+from typing import Any, Dict, List
 
 import pandas as pd
-from ftpvl.evaluation import Evaluation
+import requests
+
 import ftpvl.helpers as Helpers
+from ftpvl.evaluation import Evaluation
+
 
 class Fetcher():
     """
@@ -85,9 +88,12 @@ class HydraFetcher(Fetcher):
                 headers={'Content-Type': 'application/json'})
             if resp.status_code != 200:
                 print("Warning:", f"Unable to get build {build_num}")
-                # raise ConnectionError(f"Unable to get build {build_num}")
-            else:
+                continue
+            try:
                 data += [resp.json()]
+            except json.decoder.JSONDecodeError:
+                print("Warning:", f"Unable to decode build {build_num}")
+
 
         return data
 

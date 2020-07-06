@@ -105,7 +105,6 @@ class DebugVisualizer(Visualizer):
 
         self._visualization = (
             ordered_df.style.set_table_styles(self._custom_styles)
-            .set_caption("FPGA Performance Tool Results")
             .set_precision(2)
             .highlight_null("yellow")
             .set_na_rep("-")
@@ -158,7 +157,6 @@ class SingleTableVisualizer(Visualizer):
         if column_order is None:
             self._column_order = []
             self._column_order += [
-                "device",
                 "bram",
                 "carry",
                 "dff",
@@ -193,7 +191,6 @@ class SingleTableVisualizer(Visualizer):
         self._visualization = (
             ordered_df.style.apply(lambda x: styled_df, axis=None)
             .set_table_styles(self._custom_styles)
-            .set_caption("FPGA Performance Tool Results")
             .set_precision(2)
             .highlight_null("yellow")
             .set_na_rep("-")
