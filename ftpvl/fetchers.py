@@ -32,8 +32,8 @@ class Fetcher():
         Returns an Evaluation that represents the fetched data.
         """
         data = self._download()
-        df = self._preprocess(data)
-        return Evaluation(df)
+        preprocessed_df = self._preprocess(data)
+        return Evaluation(preprocessed_df)
 
 
 class HydraFetcher(Fetcher):
@@ -144,9 +144,9 @@ class JSONFetcher(Fetcher):
         Given the path, load the data in pandas, process the data, and return
         the resulting dataframe.
         """
-        df = pd.read_json(path)
+        loaded_df = pd.read_json(path)
         if self.mapping is None:
-            return df
+            return loaded_df
         else:
-            return (df.filter(items=self.mapping.keys())
+            return (loaded_df.filter(items=self.mapping.keys())
                     .rename(columns=self.mapping))

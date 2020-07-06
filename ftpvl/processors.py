@@ -1,6 +1,6 @@
 """ This module defines processors for ftpvl. """
 
-from typing import List, Dict
+from typing import List
 import pandas as pd
 from ftpvl.evaluation import Evaluation
 
@@ -61,7 +61,7 @@ class StandardizeTypes(Processor):
         self._types = types
 
     def process(self, input_eval: Evaluation) -> Evaluation:
-        df = input_eval.get_df()
+        input_df = input_eval.get_df()
 
         # if int, we might need to convert to float first
         # (e.g. int(float("6.0")))
@@ -70,9 +70,9 @@ class StandardizeTypes(Processor):
             pre_df_types = {
                 k: (v if v != int else float) for k, v in self._types.items()
             }
-            df = df.astype(pre_df_types)
+            input_df = input_df.astype(pre_df_types)
 
-        new_df = df.astype(self._types)
+        new_df = input_df.astype(self._types)
         return Evaluation(new_df)
 
 
@@ -140,18 +140,18 @@ class AddNormalizedColumn(Processor):
         self._input_col_name = input_col_name
         self._output_col_name = output_col_name
 
-    def _normalize(self, df: pd.DataFrame):
+    def _normalize(self, input_df: pd.DataFrame):
         """
         Given a dataframe, find the max value of the input col name and
         create a new column with the normalized value of each row
         """
-        max_val = df[self._input_col_name].max()
-        df[self._output_col_name] = df[self._input_col_name] / max_val
-        return df
+        max_val = input_df[self._input_col_name].max()
+        input_df[self._output_col_name] = input_df[self._input_col_name] / max_val
+        return input_df
 
     def process(self, input_eval: Evaluation) -> Evaluation:
-        df = input_eval.get_df()
-        new_df = df.groupby(self._groupby).apply(self._normalize)
+        input_df = input_eval.get_df()
+        new_df = input_df.groupby(self._groupby).apply(self._normalize)
 
         return Evaluation(new_df)
 
@@ -175,13 +175,13 @@ class ExpandColumn(Processor):
         self._output_col_names = output_col_names
         self._mapping = mapping
 
-    def _expansion(self, df: pd.DataFrame):
+    def _expansion(self, input_df: pd.DataFrame):
         """
         Given a dataframe that contains only one unique value in
         _input_col_name, writes new columns as defined by _output_col_names and
         _mapping and returns the new dataframe
         """
-        group_value = df[self._input_col_name].iloc[0]
+        group_value = input_df[self._input_col_name].iloc[0]
 
         # check for invalid input
         assert group_value in self._mapping.keys(), f"{group_value} not in mapping"
@@ -190,15 +190,15 @@ class ExpandColumn(Processor):
         ), f"{group_value} mapping length does not equal output_col_name length"
 
         for output_idx in range(len(self._output_col_names)):
-            df[self._output_col_names[output_idx]] = self._mapping[group_value][
+            input_df[self._output_col_names[output_idx]] = self._mapping[group_value][
                 output_idx
             ]
 
-        return df
+        return input_df
 
     def process(self, input_eval: Evaluation) -> Evaluation:
-        df = input_eval.get_df()
-        new_df = df.groupby(self._input_col_name).apply(self._expansion)
+        input_df = input_eval.get_df()
+        new_df = input_df.groupby(self._input_col_name).apply(self._expansion)
 
         return Evaluation(new_df)
 
@@ -221,8 +221,8 @@ class Reindex(Processor):
         self._reindex_names = reindex_names
 
     def process(self, input_eval: Evaluation) -> Evaluation:
-        df = input_eval.get_df()
-        new_df = df.set_index(self._reindex_names)
+        input_df = input_eval.get_df()
+        new_df = input_df.set_index(self._reindex_names)
         return Evaluation(new_df)
 
 
@@ -240,8 +240,8 @@ class SortIndex(Processor):
         self._sort_names = sort_names
 
     def process(self, input_eval: Evaluation) -> Evaluation:
-        df = input_eval.get_df()
-        new_df = df.sort_index(level=self._sort_names)
+        input_df = input_eval.get_df()
+        new_df = input_df.sort_index(level=self._sort_names)
         return Evaluation(new_df)
 
 
@@ -279,13 +279,12 @@ class NormalizeAround(Processor):
                 finding the baseline of the group and normalizing
             idx_name (str): the name of the index used to find the baseline
                 result. The baseline result will become the baseline which
-                all other grouped results will be normalized by. 
+                all other grouped results will be normalized by.
             idx_value (str): the value of the baseline result at idx_name
         """
         self._groupby = group_by
         self._idx_name = idx_name
         self._idx_value = idx_value
-
 
         self._column_names = []
         self._column_negations = []
@@ -293,23 +292,28 @@ class NormalizeAround(Processor):
             self._column_names.append(name)
             self._column_negations.append(negation)
 
-    def _normalize_around(self, df):
+    def _normalize_around(self, input_df):
         """
-        Given a dataframe, finds the first row using the vivado toolchain and
-        normalizes all other rows around it. Only affects STYLED_COLUMNS.
-        Returns the altered df.
+        Given a dataframe, finds the baseline using the specified index name
+        and value, and normalizes all other rows around it. Only affects items
+        specified in normalize_direction. Returns the altered df.
         """
-        is_vivado = df.index.get_level_values(self._idx_name) == self._idx_value
-        base = df.loc[is_vivado, self._column_names].iloc[0]  # vivado stats
-        scaling_factor = (df[self._column_names] - base).abs().max()
-        scaled = (df[self._column_names] - base) / scaling_factor  # between -1 and 1
+        is_baseline = input_df.index.get_level_values(self._idx_name) == self._idx_value
+
+        # get stats for baseline
+        base = input_df.loc[is_baseline, self._column_names].iloc[0]
+        scaling_factor = (input_df[self._column_names] - base).abs().max()
+
+        # rescale values to between -1 and 1
+        scaled = (input_df[self._column_names] - base) / scaling_factor
         scaled *= self._column_negations
-        offset = (scaled / 2) + 0.5  # between 0 and 1
-        df[self._column_names] = offset
-        return df
+
+        # rescale values to between 0 and 1
+        offset = (scaled / 2) + 0.5
+        input_df[self._column_names] = offset
+        return input_df
 
     def process(self, input_eval: Evaluation) -> Evaluation:
-        df = input_eval.get_df()
-        new_df = df.groupby(self._groupby).apply(self._normalize_around)
+        input_df = input_eval.get_df()
+        new_df = input_df.groupby(self._groupby).apply(self._normalize_around)
         return Evaluation(new_df)
-

@@ -27,7 +27,7 @@ def get_versions(obj: dict) -> dict:
     Given a flattened object decoded from meta.json, return a dictionary of
     the versions in that object
     """
-    return {k:v for k, v in obj.items() if k.startswith("versions.")}   
+    return {k:v for k, v in obj.items() if k.startswith("versions.")}
 
 
 def rescale_actual_freq(freq: Union[int, float]) -> Union[int, float]:
@@ -71,8 +71,9 @@ def get_actual_freq(obj: dict, hydra_clock_names: list = None):
 
 def get_styling(val, cmap):
     """
-    Given a value, returns a CSS string with the background-color set to the color
-    in the cmap, or an empty CSS string if the value is not a float between 0 and 1.
+    Given a value, returns a CSS string with the background-color set to the
+    color in the cmap, or an empty CSS string if the value is not a float
+    between 0 and 1.
     """
     if isinstance(val, float) and 0 <= val <= 1:
         color = tuple([int(x * 255) for x in cmap(val)[:-1]])
