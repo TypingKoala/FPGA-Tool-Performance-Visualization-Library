@@ -1,6 +1,8 @@
 # FPGA Tool Performance Visualization Library (FTPVL)
 ![Python application](https://github.com/TypingKoala/FPGA-Tool-Performance-Visualization-Library/workflows/Python%20application/badge.svg)
 
+<img src="examples/images/singletablevisualizer.png" alt="Single Table Visualization" width="75%" style="display: block; margin-left: auto; margin-right: auto">
+
 FTPVL is a library for simplifying the data collection and visualization process
 for Symbiflow development. Although it was made with Symbiflow in mind, it is
 highly extensible for future integration with other software.
