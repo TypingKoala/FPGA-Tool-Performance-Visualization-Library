@@ -84,8 +84,10 @@ class HydraFetcher(Fetcher):
                 f'https://hydra.vtr.tools/build/{build_num}/download/1/meta.json',
                 headers={'Content-Type': 'application/json'})
             if resp.status_code != 200:
-                raise ConnectionError(f"Unable to get build {build_num}")
-            data += [resp.json()]
+                print("Warning:", f"Unable to get build {build_num}")
+                # raise ConnectionError(f"Unable to get build {build_num}")
+            else:
+                data += [resp.json()]
 
         return data
 
