@@ -22,4 +22,5 @@ management and processing. Other dependencies are explained below:
 ## Example Usage
 Take a look at the notebooks below to demonstrate the functionality of FTPVL.
 
-1. [Using `HydraFetcher` and `DebugVisualizer`](https://colab.research.google.com/drive/1BIQ-iulDFpzcve7lGJPwLePJ5ETBJ6Ut?usp=sharing)
+1. [Using `HydraFetcher` and Processors](https://colab.research.google.com/drive/1BIQ-iulDFpzcve7lGJPwLePJ5ETBJ6Ut?usp=sharing)
+2. [Styling tables with `SingleTableVisualizer`](https://colab.research.google.com/drive/1u3EnmIYnTBk-LXZhqNHt_h4aMuq-_cWq?usp=sharing)
