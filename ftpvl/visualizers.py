@@ -2,8 +2,6 @@
 from typing import List
 
 from ftpvl.evaluation import Evaluation
-from ftpvl.styles import Style
-
 
 class Visualizer:
     """
@@ -57,7 +55,7 @@ class DebugVisualizer(Visualizer):
             version_info (bool, optional): Flag to display version information
                 from the build results in the final visualization. Defaults to
                 False.
-            custom_sytles (List[dict], optional): Specify additional styling
+            custom_styles (List[dict], optional): Specify additional styling
                 for the final visualzation. See formatting here:
                 https://pandas.pydata.org/pandas-docs/stable/user_guide/style.html#Table-styles
             column_order(List[str], optional): Specify the columns and ordering
@@ -125,25 +123,81 @@ class SingleTableVisualizer(Visualizer):
     """
 
     def __init__(
-        self, evaluation: Evaluation, style: Style, version_info: bool = False
+        self,
+        evaluation: Evaluation,
+        style_eval: Evaluation,
+        version_info: bool = False,
+        custom_styles: List[dict] = None,
+        column_order: List[str] = None,
     ):
         """Initialize a visualizer that displays a single Evaluation instance.
 
         Args:
-            evaluation (Evaluation): the Evaluation to display
-            style (Style): the style to use when styling the final visualization
+            evaluation (Evaluation): the Evaluation with values to display
+            style_eval (Evaluation): the Evaluation to use for styling. Should
+                be processed using a Style, all values are valid CSS strings
+                or empty.
             version_info (bool, optional): Flag to display version information
                 from the build results in the final visualization. Defaults to
                 False.
+            custom_styles (List[dict], optional): Specify additional styling
+                for the final visualzation. See formatting here:
+                https://pandas.pydata.org/pandas-docs/stable/user_guide/style.html#Table-styles
+            column_order(List[str], optional): Specify the columns and ordering
+                in the final visualization. Overrides version_info, so you must
+                specify version columns in addition. Defaults to None, which
+                will set the column order to a preset useful for VtR.
         """
         super().__init__()
         self._evaluation = evaluation
-        self._style = style
+        self._style_eval = style_eval
         self._version_info = version_info
 
+        self._custom_styles = custom_styles if custom_styles else []
+
+        if column_order is None:
+            self._column_order = []
+            self._column_order += [
+                "device",
+                "bram",
+                "carry",
+                "dff",
+                "iob",
+                "lut",
+                "pll",
+                "synthesis",
+                "pack",
+                "place",
+                "route",
+                "fasm",
+                "bitstream",
+                "total",
+                "freq",
+                "normalized_max_freq",
+            ]
+            if self._version_info:
+                self._column_order += [
+                    "versions.vivado",
+                    "versions.vpr",
+                    "versions.yosys",
+                    "versions.nextpnr-xilinx",
+                    "versions.nextpnr-ice40",
+                ]
+        else:
+            self._column_order = column_order
+
     def _generate(self):
-        # TODO: Implement visualization generation
-        raise NotImplementedError
+        """ Generate visualization and save in self._visualization """
+        ordered_df = self._evaluation.get_df()[self._column_order]
+        styled_df = self._style_eval.get_df()[self._column_order]
+        self._visualization = (
+            ordered_df.style.apply(lambda x: styled_df, axis=None)
+            .set_table_styles(self._custom_styles)
+            .set_caption("FPGA Performance Tool Results")
+            .set_precision(2)
+            .highlight_null("yellow")
+            .set_na_rep("-")
+        )
 
 
 # class TwoTableVisualizer(Visualizer):
