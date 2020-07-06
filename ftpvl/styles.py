@@ -4,6 +4,7 @@ from ftpvl.evaluation import Evaluation
 from ftpvl.processors import Processor
 from ftpvl.helpers import get_styling
 
+
 class Style(Processor):
     """
     Represents a type of processor that returns an evaluation containing CSS
@@ -12,6 +13,7 @@ class Style(Processor):
 
     def process(self, input_eval: Evaluation) -> Evaluation:
         raise NotImplementedError
+
 
 class ColorMapStyle(Style):
     """
