@@ -1,9 +1,11 @@
 """ This module defines visualizers for ftpvl """
+from typing import List
 
 from ftpvl.evaluation import Evaluation
 from ftpvl.styles import Style
 
-class Visualizer():
+
+class Visualizer:
     """
     Represents a visualizer that can generate and display styled evaluations.
 
@@ -28,6 +30,7 @@ class Visualizer():
         self._generate()
         return self._visualization
 
+
 class DebugVisualizer(Visualizer):
     """
     Represents a visualizer that will print the given Evaluation, possibly with
@@ -35,25 +38,104 @@ class DebugVisualizer(Visualizer):
 
     Useful for debugging.
 
-    Attributes:
-        evaluation: an Evaluation to display
-        version_info: a boolean flag that will show version info if True
+    Methods:
+        get_visualization(): returns a displayable visualizaton, can be
+            displayed by calling display() in an interactive Python environment
     """
-    def __init__(self, evaluation: Evaluation, version_info: bool = False):
+
+    def __init__(
+        self,
+        evaluation: Evaluation,
+        version_info: bool = False,
+        custom_styles: List[dict] = None,
+        column_order: List[str] = None,
+    ):
+        """Initialize a visualizer that displays a single Evaluation instance.
+
+        Args:
+            evaluation (Evaluation): the Evaluation to display
+            version_info (bool, optional): Flag to display version information
+                from the build results in the final visualization. Defaults to
+                False.
+            custom_sytles (List[dict], optional): Specify additional styling
+                for the final visualzation. See formatting here:
+                https://pandas.pydata.org/pandas-docs/stable/user_guide/style.html#Table-styles
+            column_order(List[str], optional): Specify the columns and ordering
+                in the final visualization. Overrides version_info, so you must
+                specify version columns in addition. Defaults to None, which
+                will set the column order to a preset useful for VtR.
+        """
         super().__init__()
         self._evaluation = evaluation
         self._version_info = version_info
+        self._custom_styles = custom_styles if custom_styles else []
+
+        if column_order is None:
+            self._column_order = []
+            self._column_order += [
+                "device",
+                "bram",
+                "carry",
+                "dff",
+                "iob",
+                "lut",
+                "pll",
+                "synthesis",
+                "pack",
+                "place",
+                "route",
+                "fasm",
+                "bitstream",
+                "total",
+                "freq",
+                "normalized_max_freq",
+            ]
+            if self._version_info:
+                self._column_order += [
+                    "versions.vivado",
+                    "versions.vpr",
+                    "versions.yosys",
+                    "versions.nextpnr-xilinx",
+                    "versions.nextpnr-ice40",
+                ]
+        else:
+            self._column_order = column_order
 
     def _generate(self):
-        # TODO: Implement visualization generation
-        raise NotImplementedError
+        """ Generate visualization and save in self._visualization """
+        ordered_df = self._evaluation.get_df()[self._column_order]
+
+        self._visualization = (
+            ordered_df.style.set_table_styles(self._custom_styles)
+            .set_caption("FPGA Performance Tool Results")
+            .set_precision(2)
+            .highlight_null("yellow")
+            .set_na_rep("-")
+        )
+
 
 class SingleTableVisualizer(Visualizer):
     """
-    Represents a visualizer for a styled single table.
+    Represents a visualizer for a styled single table, possibly with version
+    information.
+
+    Methods:
+            get_visualization(): returns a displayable visualizaton, can be
+            displayed by calling display() in an interactive Python environment
     """
-    def __init__(self, evaluation: Evaluation, style: Style,
-                 version_info: bool = False):
+
+    def __init__(
+        self, evaluation: Evaluation, style: Style, version_info: bool = False
+    ):
+        """Initialize a visualizer that displays a single Evaluation instance.
+
+        Args:
+            evaluation (Evaluation): the Evaluation to display
+            style (Style): the style to use when styling the final visualization
+            version_info (bool, optional): Flag to display version information
+                from the build results in the final visualization. Defaults to
+                False.
+        """
         super().__init__()
         self._evaluation = evaluation
         self._style = style
@@ -62,6 +144,7 @@ class SingleTableVisualizer(Visualizer):
     def _generate(self):
         # TODO: Implement visualization generation
         raise NotImplementedError
+
 
 # class TwoTableVisualizer(Visualizer):
 #     """
