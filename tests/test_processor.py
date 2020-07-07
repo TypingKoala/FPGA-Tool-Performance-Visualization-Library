@@ -13,7 +13,8 @@ from ftpvl.processors import (
     ExpandColumn,
     Reindex,
     SortIndex,
-    NormalizeAround
+    NormalizeAround,
+    Normalize,
 )
 
 from ftpvl.evaluation import Evaluation
@@ -31,6 +32,7 @@ class TestProcessor:
     Reindex()
     SortIndex()
     NormalizeAround()
+    Normalize()
     """
 
     def test_minusone(self):
@@ -359,4 +361,68 @@ class TestProcessor:
         )
         assert_frame_equal(result, expected)
 
+    def test_normalize(self):
+        """
+        Test whether all values are normalized
+        """
+        df = pd.DataFrame(
+            data=[
+                {"group": "b", "value": -50},
+                {"group": "b", "value": 50},
+                {"group": "b", "value": 100},
+                {"group": "a", "value": 0},
+                {"group": "a", "value": 10},
+            ]
+        )
+        eval1 = Evaluation(df)
 
+        normalize_direction = {
+            "value": 1
+        }
+        pipeline = [Normalize(normalize_direction)]
+
+        result = eval1.process(pipeline).get_df()
+        expected = pd.DataFrame(
+            data=[
+                {"group": "b", "value": 0.25},
+                {"group": "b", "value": 0.75},
+                {"group": "b", "value": 1.0},
+                {"group": "a", "value": 0.5},
+                {"group": "a", "value": 0.55},
+            ],
+        )
+
+        assert_frame_equal(result, expected)\
+
+    def test_normalize_negated(self):
+        """
+        Test whether all values are normalized
+        """
+        df = pd.DataFrame(
+            data=[
+                {"group": "b", "value": -50},
+                {"group": "b", "value": 50},
+                {"group": "b", "value": 100},
+                {"group": "a", "value": 0},
+                {"group": "a", "value": 10},
+            ]
+        )
+        eval1 = Evaluation(df)
+
+        normalize_direction = {
+            "value": -1
+        }
+        pipeline = [Normalize(normalize_direction)]
+
+        result = eval1.process(pipeline).get_df()
+        expected = pd.DataFrame(
+            data=[
+                {"group": "b", "value": 0.75},
+                {"group": "b", "value": 0.25},
+                {"group": "b", "value": 0},
+                {"group": "a", "value": 0.5},
+                {"group": "a", "value": 0.45},
+            ],
+        )
+
+        assert_frame_equal(result, expected)

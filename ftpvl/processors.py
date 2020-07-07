@@ -317,3 +317,57 @@ class NormalizeAround(Processor):
         input_df = input_eval.get_df()
         new_df = input_df.groupby(self._groupby).apply(self._normalize_around)
         return Evaluation(new_df)
+
+
+class Normalize(Processor):
+    """
+    Processor that normalizes all specified values in an Evaluation by column
+    around zero.
+
+    All normalized values are between 0 and 1, with 0.5 being the baseline.
+    Therefore, a value of zero is mapped to 0.5, positive values are mapped
+    to values > 0.5, and negative values are mapped to values < 0.5.
+
+    This is useful in creating styles for evaluations that have already
+    performed calculations to compare multiple evaluations. For example, you
+    can subtract one evaluation from another, then apply this processor before
+    styling.
+    """
+
+    def __init__(self, normalize_direction: dict):
+        """Initializes the NormalizeAround processor.
+
+        Args:
+            normalize_direction (dict): a dictionary mapping column
+                names to 1 or -1. If a value is optimized when smaller, set the
+                negation to 1. If it is optimized when larger, set the negation
+                to -1. If there is no entry, normalization is skipped.
+        """
+        self._column_names = []
+        self._column_negations = []
+        for name, negation in normalize_direction.items():
+            self._column_names.append(name)
+            self._column_negations.append(negation)
+
+    def _normalize(self, input_df):
+        """
+        Given a dataframe, normalizes each column. Only affects items
+        specified in normalize_direction. Returns the altered df.
+        """
+
+        # find scaling factor
+        scaling_factor = (input_df[self._column_names]).abs().max()
+
+        # rescale values to between -1 and 1
+        scaled = (input_df[self._column_names]) / scaling_factor
+        scaled *= self._column_negations
+
+        # rescale values to between 0 and 1
+        offset = (scaled / 2) + 0.5
+        input_df[self._column_names] = offset
+        return input_df
+
+    def process(self, input_eval: Evaluation) -> Evaluation:
+        input_df = input_eval.get_df()
+        new_df = self._normalize(input_df)
+        return Evaluation(new_df)
