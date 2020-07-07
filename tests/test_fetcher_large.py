@@ -78,11 +78,12 @@ class TestHydraFetcherLarge(unittest.TestCase):
                         url = f'https://hydra.vtr.tools/build/{build_num}/download/1/meta.json'
                         m.get(url, text=meta_json_encoded)
 
-            # run tests on different eval_num, up to 5
+            # run tests on different eval_num
             for eval_num in range(len(evals_json_decoded["evals"])):
                 with self.subTest(eval_num=eval_num):
-                    print('subtest', eval_num)
                     # if mapping is not defined, should not remap
+                    if len(evals_json_decoded["evals"][eval_num]["builds"]) == 0:
+                        continue # otherwise hydrafetcher will throw error
                     hf = HydraFetcher(eval_num=eval_num)
                     result = hf.get_evaluation().get_df()
 
