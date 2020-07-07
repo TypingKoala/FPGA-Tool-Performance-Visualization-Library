@@ -94,6 +94,8 @@ class HydraFetcher(Fetcher):
             except json.decoder.JSONDecodeError:
                 print("Warning:", f"Unable to decode build {build_num}")
 
+        if len(data) == 0:
+            raise ValueError("Not able to fetch any builds from eval_num {eval_num}")
 
         return data
 
