@@ -68,6 +68,9 @@ class TestHydraFetcherSmall(unittest.TestCase):
                     expected = pd.DataFrame({"build_num": col})
                     assert_frame_equal(result, expected)
 
+                    eval_id = hf.get_evaluation().get_eval_id()
+                    assert eval_id == eval_num + 1
+
     def test_hydrafetcher_get_evaluation_mapping(self):
         """
         get_evaluation() should return an Evaluation corresponding to the small

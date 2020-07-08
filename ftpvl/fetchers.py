@@ -17,16 +17,20 @@ class Fetcher():
     as an Evaluation for use by other tools in the library.
     """
 
+    def __init__(self):
+        """Initializes the Fetcher superclass"""
+        self._eval_id = None
+
     def _download(self) -> Any:
         """
-        Retrieves evaluation data over the internet.
+        Retrieves evaluation data over the internet and saves the data as
+        an instance variable.
         """
         raise NotImplementedError
 
     def _preprocess(self, data: Any) -> pd.DataFrame:
         """
-        Given the downloaded data, process the data and return the resulting
-        dataframe.
+        Process the data and return the resulting dataframe.
         """
         raise NotImplementedError
 
@@ -36,7 +40,7 @@ class Fetcher():
         """
         data = self._download()
         preprocessed_df = self._preprocess(data)
-        return Evaluation(preprocessed_df)
+        return Evaluation(preprocessed_df, eval_id=self._eval_id)
 
 
 class HydraFetcher(Fetcher):
@@ -56,8 +60,9 @@ class HydraFetcher(Fetcher):
     def __init__(self, eval_num: int = 0, mapping: dict = None,
                  hydra_clock_names: list = None) -> None:
         """
-        Inits HydraFetcher with eval_num and mapping.
+        Inits HydraFetcher with eval_num, mapping, and hydra_clock_names.
         """
+        super().__init__()
         self.eval_num = eval_num
         self.mapping = mapping
         self.hydra_clock_names = hydra_clock_names
@@ -74,7 +79,7 @@ class HydraFetcher(Fetcher):
             'https://hydra.vtr.tools/jobset/dusty/fpga-tool-perf/evals',
             headers={'Content-Type': 'application/json'})
         if resp.status_code != 200:
-            raise ConnectionError("Unable to get evals.")
+            raise ConnectionError("Unable to get evals from server.")
         evals_json = resp.json()
         if self.eval_num >= len(evals_json['evals']):
             raise IndexError(f"Invalid eval_num: {self.eval_num}")
@@ -96,7 +101,8 @@ class HydraFetcher(Fetcher):
 
         if len(data) == 0:
             raise ValueError(f"Not able to fetch any builds from eval_num {self.eval_num}")
-
+    
+        self._eval_id = evals_json['evals'][self.eval_num]["id"]
         return data
 
     def _preprocess(self, data: List[Dict]) -> pd.DataFrame:
@@ -138,6 +144,7 @@ class JSONFetcher(Fetcher):
         """
         Inits FeatherFetcher with path and mapping.
         """
+        super().__init__()
         self.path = path
         self.mapping = mapping
 

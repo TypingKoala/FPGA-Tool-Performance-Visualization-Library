@@ -1,6 +1,6 @@
 """ This module defines evaluations for ftpvl. """
 
-from typing import List
+from typing import List, Union
 
 import pandas as pd
 
@@ -18,17 +18,24 @@ class Evaluation():
             after it has been processed by all processors
     """
 
-    def __init__(self, df: pd.DataFrame):
+    def __init__(self, df: pd.DataFrame, eval_id: int = None):
         """
         Init Evaluation with dataframe.
         """
         self._df = df
+        self._eval_id = eval_id
 
     def get_df(self) -> pd.DataFrame:
         """
         Returns a copy of the Pandas DataFrame that represents the evaluation
         """
         return self._df.copy()
+
+    def get_eval_id(self) -> Union[int, None]:
+        """
+        Returns the eval_id if specified, otherwise None
+        """
+        return self._eval_id
 
     def process(self, pipeline: List['Processor']) -> 'Evaluation':
         """
