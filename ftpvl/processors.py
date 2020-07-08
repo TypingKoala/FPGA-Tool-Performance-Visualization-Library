@@ -40,7 +40,7 @@ class MinusOne(Processor):
     """
 
     def process(self, input_eval: Evaluation) -> Evaluation:
-        return Evaluation(input_eval.get_df() - 1)
+        return Evaluation(input_eval.get_df() - 1, input_eval.get_eval_id())
 
 
 class StandardizeTypes(Processor):
@@ -73,7 +73,7 @@ class StandardizeTypes(Processor):
             input_df = input_df.astype(pre_df_types)
 
         new_df = input_df.astype(self._types)
-        return Evaluation(new_df)
+        return Evaluation(new_df, input_eval.get_eval_id())
 
 
 class CleanDuplicates(Processor):
@@ -111,14 +111,14 @@ class CleanDuplicates(Processor):
             new_df = input_eval.get_df().drop_duplicates(
                 subset=self._duplicate_col_names
             )
-            return Evaluation(new_df)
+            return Evaluation(new_df, input_eval.get_eval_id())
         else:
             new_df = (
                 input_eval.get_df()
                 .sort_values(by=self._sort_col_names, ascending=self._reverse_sort)
                 .drop_duplicates(subset=self._duplicate_col_names)
             )
-            return Evaluation(new_df)
+            return Evaluation(new_df, input_eval.get_eval_id())
 
 
 class AddNormalizedColumn(Processor):
@@ -153,7 +153,7 @@ class AddNormalizedColumn(Processor):
         input_df = input_eval.get_df()
         new_df = input_df.groupby(self._groupby).apply(self._normalize)
 
-        return Evaluation(new_df)
+        return Evaluation(new_df, input_eval.get_eval_id())
 
 
 class ExpandColumn(Processor):
@@ -200,7 +200,7 @@ class ExpandColumn(Processor):
         input_df = input_eval.get_df()
         new_df = input_df.groupby(self._input_col_name).apply(self._expansion)
 
-        return Evaluation(new_df)
+        return Evaluation(new_df, input_eval.get_eval_id())
 
 
 class Reindex(Processor):
@@ -223,7 +223,7 @@ class Reindex(Processor):
     def process(self, input_eval: Evaluation) -> Evaluation:
         input_df = input_eval.get_df()
         new_df = input_df.set_index(self._reindex_names)
-        return Evaluation(new_df)
+        return Evaluation(new_df, input_eval.get_eval_id())
 
 
 class SortIndex(Processor):
@@ -242,7 +242,7 @@ class SortIndex(Processor):
     def process(self, input_eval: Evaluation) -> Evaluation:
         input_df = input_eval.get_df()
         new_df = input_df.sort_index(level=self._sort_names)
-        return Evaluation(new_df)
+        return Evaluation(new_df, input_eval.get_eval_id())
 
 
 class NormalizeAround(Processor):
@@ -316,7 +316,7 @@ class NormalizeAround(Processor):
     def process(self, input_eval: Evaluation) -> Evaluation:
         input_df = input_eval.get_df()
         new_df = input_df.groupby(self._groupby).apply(self._normalize_around)
-        return Evaluation(new_df)
+        return Evaluation(new_df, input_eval.get_eval_id())
 
 
 class Normalize(Processor):
@@ -370,4 +370,4 @@ class Normalize(Processor):
     def process(self, input_eval: Evaluation) -> Evaluation:
         input_df = input_eval.get_df()
         new_df = self._normalize(input_df)
-        return Evaluation(new_df)
+        return Evaluation(new_df, input_eval.get_eval_id())

@@ -1,27 +1,24 @@
 """ This module defines evaluations for ftpvl. """
 
 from typing import List, Union
-
 import pandas as pd
 
 class Evaluation():
     """
-    This class represents one evaluation of the FPGA-tool-perf tests.
+    A collection of test results from a single evaluation of a piece
+    of software on one or more test cases.
 
-    It stores the results in a dataframe, which can be transformed using a
-    processing pipeline. The columns of the dataframe are standardized for all
-    Evaluation instances.
+    Parameters
+    ----------
+    df : pd.DataFrame
+        The dataframe that contains the test results of the given evaluation,
+        rows for each test case and columns for each recorded metric
 
-    Methods:
-        get_df(): returns a copy of the dataframe that represents the evaluation
-        process(pipeline): given a list of processors, returns an Evaluation
-            after it has been processed by all processors
+    eval_id : int, optional
+        The ID number of the evaluation, by default None
     """
 
     def __init__(self, df: pd.DataFrame, eval_id: int = None):
-        """
-        Init Evaluation with dataframe.
-        """
         self._df = df
         self._eval_id = eval_id
 
@@ -33,7 +30,7 @@ class Evaluation():
 
     def get_eval_id(self) -> Union[int, None]:
         """
-        Returns the eval_id if specified, otherwise None
+        Returns the ID number of the evaluation if specified, otherwise None
         """
         return self._eval_id
 
@@ -41,7 +38,8 @@ class Evaluation():
         """
         Executes each processor in the pipeline and returns a new Evaluation.
 
-        Args:
+        Args
+        -------
             pipeline: a list of Processors to process the Evaluation in order
 
         Returns:

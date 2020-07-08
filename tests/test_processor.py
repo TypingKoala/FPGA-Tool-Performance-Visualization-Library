@@ -39,7 +39,7 @@ class TestProcessor:
         """ Test whether all values are correctly changed """
 
         df = pd.DataFrame({"a": [1, 2, 3, 4, 5]})
-        eval1 = Evaluation(df)
+        eval1 = Evaluation(df, eval_id=10)
 
         result = eval1.get_df()["a"]
         expected = pd.Series([1, 2, 3, 4, 5], name="a")
@@ -47,16 +47,20 @@ class TestProcessor:
         assert_series_equal(result, expected)
 
         pipeline = [MinusOne()]
-        result_processed = eval1.process(pipeline).get_df()["a"]
-        expected_processed = pd.Series([0, 1, 2, 3, 4], name="a")
+        result_processed = eval1.process(pipeline)
+        result_df = result_processed.get_df()["a"]
+        expected_df = pd.Series([0, 1, 2, 3, 4], name="a")
 
-        assert_series_equal(result_processed, expected_processed)
+        assert_series_equal(result_df, expected_df)
+
+        assert result_processed.get_eval_id() == 10
+
 
     def test_standardizetypes(self):
         """ Test whether types are standardized """
         types = {"a": float}
         df = pd.DataFrame({"a": [1, 2, 3, 4, 5]})
-        eval1 = Evaluation(df)
+        eval1 = Evaluation(df, eval_id=10)
 
         assert eval1.get_df().dtypes["a"] == int
 
@@ -65,6 +69,8 @@ class TestProcessor:
         result = eval1.process(pipeline)
 
         assert result.get_df().dtypes["a"] == float
+
+        assert result.get_eval_id() == 10
 
     def test_cleanduplicates_no_duplicates(self):
         """ Test for evaluation that has no duplicates in specified column """
@@ -77,12 +83,14 @@ class TestProcessor:
                 {"a": 5, "b": 5, "c": 1},
             ]
         )
-        eval1 = Evaluation(df)
+        eval1 = Evaluation(df, eval_id=10)
 
         # test no duplicates
         pipeline = [CleanDuplicates(["b"])]
-        result = eval1.process(pipeline).get_df()
-        assert_frame_equal(result, df, check_like=True)
+        result = eval1.process(pipeline)
+        assert_frame_equal(result.get_df(), df, check_like=True)
+
+        assert result.get_eval_id() == 10
 
     def test_cleanduplicates_one_col(self):
         """ Test for evaluation that has duplicate in one column """
@@ -158,10 +166,10 @@ class TestProcessor:
                 {"group": "b", "value": 31},
             ]
         )
-        eval1 = Evaluation(df)
+        eval1 = Evaluation(df, eval_id=10)
 
         pipeline = [AddNormalizedColumn("group", "value", "normalized")]
-        result = eval1.process(pipeline).get_df()
+        result = eval1.process(pipeline)
         expected = pd.DataFrame(
             [
                 {"group": "a", "value": 10, "normalized": 1.0},
@@ -172,7 +180,9 @@ class TestProcessor:
             ]
         )
 
-        assert_frame_equal(result, expected)
+        assert_frame_equal(result.get_df(), expected)
+
+        assert result.get_eval_id() == 10
 
     def test_expandcolumn(self):
         """ Test whether the column is expanded """
@@ -185,7 +195,7 @@ class TestProcessor:
                 {"group": "b", "value": 31},
             ]
         )
-        eval1 = Evaluation(df)
+        eval1 = Evaluation(df, eval_id=10)
 
         mapping = {
             "a": ("a", "x"),
@@ -193,7 +203,7 @@ class TestProcessor:
         }
 
         pipeline = [ExpandColumn("group", ["group1", "group2"], mapping)]
-        result = eval1.process(pipeline).get_df()
+        result = eval1.process(pipeline)
         expected = pd.DataFrame(
             [
                 {"group": "a", "group1": "a", "group2": "x", "value": 10},
@@ -204,7 +214,8 @@ class TestProcessor:
             ]
         )
 
-        assert_frame_equal(result, expected, check_like=True)
+        assert_frame_equal(result.get_df(), expected, check_like=True)
+        assert result.get_eval_id() == 10
 
     def test_reindex(self):
         """ Test whether the dataframe was reindexed """
@@ -217,18 +228,20 @@ class TestProcessor:
                 {"group": "b", "key": "e", "value": 31},
             ]
         )
-        eval1 = Evaluation(df)
+        eval1 = Evaluation(df, eval_id=10)
 
         pipeline = [Reindex(["value"])]
-        result = eval1.process(pipeline).get_df()
+        result = eval1.process(pipeline)
         expected_index = pd.Index([10, 5, 3, 100, 31], name="value")
-        assert_index_equal(result.index, expected_index)
+        assert_index_equal(result.get_df().index, expected_index)
+        assert result.get_eval_id() == 10
 
         pipeline = [Reindex(["group", "key"])]
-        result = eval1.process(pipeline).get_df()
+        result = eval1.process(pipeline)
         arrays = [["a", "a", "a", "b", "b"], ["a", "b", "c", "d", "e"]]
         expected_index = pd.MultiIndex.from_arrays(arrays, names=("group", "key"))
-        assert_index_equal(result.index, expected_index)
+        assert_index_equal(result.get_df().index, expected_index)
+        assert result.get_eval_id() == 10
 
     def test_sortindex(self):
         """ Test whether the dataframe is sorted by index """
@@ -249,10 +262,10 @@ class TestProcessor:
             ], name="idx")
         )
         
-        eval1 = Evaluation(df)
+        eval1 = Evaluation(df, eval_id=10)
         
         pipeline = [SortIndex(["idx"])]
-        result = eval1.process(pipeline).get_df()
+        result = eval1.process(pipeline)
         expected = pd.DataFrame(
             data = [
                 {"group": "b", "value": 31},
@@ -269,8 +282,8 @@ class TestProcessor:
                 5,
             ], name="idx")
         )
-        assert_frame_equal(result, expected)
-
+        assert_frame_equal(result.get_df(), expected)
+        assert result.get_eval_id() == 10
 
     def test_normalizearound(self):
         """
@@ -291,7 +304,7 @@ class TestProcessor:
             ],
             index=index
         )
-        eval1 = Evaluation(df)
+        eval1 = Evaluation(df, eval_id=10)
 
         normalize_direction = {
             "value": 1
@@ -303,7 +316,7 @@ class TestProcessor:
             idx_value="vivado"
         )]
 
-        result = eval1.process(pipeline).get_df()
+        result = eval1.process(pipeline)
         expected = pd.DataFrame(
             data=[
                 {"group": "b", "value": 0},
@@ -314,7 +327,8 @@ class TestProcessor:
             ],
             index=index
         )
-        assert_frame_equal(result, expected)
+        assert_frame_equal(result.get_df(), expected)
+        assert result.get_eval_id() == 10
 
     def test_normalizearound_negated(self):
         """
@@ -336,7 +350,7 @@ class TestProcessor:
             ],
             index=index
         )
-        eval1 = Evaluation(df)
+        eval1 = Evaluation(df, eval_id=10)
 
         normalize_direction = {
             "value": -1
@@ -348,7 +362,7 @@ class TestProcessor:
             idx_value="vivado"
         )]
 
-        result = eval1.process(pipeline).get_df()
+        result = eval1.process(pipeline)
         expected = pd.DataFrame(
             data=[
                 {"group": "b", "value": 1},
@@ -359,7 +373,8 @@ class TestProcessor:
             ],
             index=index
         )
-        assert_frame_equal(result, expected)
+        assert_frame_equal(result.get_df(), expected)
+        assert result.get_eval_id() == 10
 
     def test_normalize(self):
         """
@@ -374,14 +389,14 @@ class TestProcessor:
                 {"group": "a", "value": 10},
             ]
         )
-        eval1 = Evaluation(df)
+        eval1 = Evaluation(df, eval_id=10)
 
         normalize_direction = {
             "value": 1
         }
         pipeline = [Normalize(normalize_direction)]
 
-        result = eval1.process(pipeline).get_df()
+        result = eval1.process(pipeline)
         expected = pd.DataFrame(
             data=[
                 {"group": "b", "value": 0.25},
@@ -392,7 +407,8 @@ class TestProcessor:
             ],
         )
 
-        assert_frame_equal(result, expected)\
+        assert_frame_equal(result.get_df(), expected)
+        assert result.get_eval_id() == 10
 
     def test_normalize_negated(self):
         """
