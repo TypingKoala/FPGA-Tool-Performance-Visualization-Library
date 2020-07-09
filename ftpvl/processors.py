@@ -15,18 +15,6 @@ class Processor:
     """
 
     def process(self, input_eval: Evaluation) -> Evaluation:
-        """
-        Given an Evaluation instance, returns a new Evaluation instance that
-        is processed.
-
-        This method does not mutate the input Evaluation.
-
-        Args:
-            input_eval: an Evaluation to process
-
-        Returns:
-            a processed Evaluation object
-        """
         raise NotImplementedError
 
 
@@ -50,29 +38,29 @@ class StandardizeTypes(Processor):
     The type of each metric in an Evaluation is inferred after
     fetching. This processor accepts a dictionary of types and casts the
     Evaluation to those types.
+
+    Parameters
+    ----------
+    types : dict
+        A mapping from column names to types
     """
 
     def __init__(self, types: dict):
-        """Initializes StandardizeTypes processor.
-
-        Args:
-            types (dict): A dictionary mapping column names to types.
-        """
-        self._types = types
+        self.types = types
 
     def process(self, input_eval: Evaluation) -> Evaluation:
         input_df = input_eval.get_df()
 
         # if int, we might need to convert to float first
         # (e.g. int(float("6.0")))
-        if int in self._types.values():
+        if int in self.types.values():
             # create dictionary replacing int with float
             pre_df_types = {
-                k: (v if v != int else float) for k, v in self._types.items()
+                k: (v if v != int else float) for k, v in self.types.items()
             }
             input_df = input_df.astype(pre_df_types)
 
-        new_df = input_df.astype(self._types)
+        new_df = input_df.astype(self.types)
         return Evaluation(new_df, input_eval.get_eval_id())
 
 
@@ -84,6 +72,17 @@ class CleanDuplicates(Processor):
     By default, the first instance of a duplicate is retained, and all others
     are removed. You can optionally specify columns to sort by and which way to
     sort, which provides fine-grained control over which rows are removed.
+
+    Parameters
+    ----------
+    duplicate_col_names : List[str]
+        column names to use when finding duplicates
+
+    sort_col_names : List[str], optional
+        column names to sort by, by default None
+ 
+    reverse_sort : bool, optional
+        sort in ascending order, by default False
     """
 
     def __init__(
@@ -92,16 +91,7 @@ class CleanDuplicates(Processor):
         sort_col_names: List[str] = None,
         reverse_sort: bool = False,
     ):
-        """Initializes CleanDuplicates processor.
 
-        Args:
-            duplicate_col_names (List[str]): column names to use when finding
-                duplicates
-            sort_col_names (List[str], optional): column names to sort by.
-                Defaults to None.
-            reverse_sort (bool, optional): If True, sorts in ascending order.
-                Defaults to False.
-        """
         self._duplicate_col_names = duplicate_col_names
         self._sort_col_names = sort_col_names
         self._reverse_sort = reverse_sort
@@ -126,16 +116,21 @@ class AddNormalizedColumn(Processor):
     Processor that groups rows by a column, calculates the maximum of the
     specified column, and adds a new column with the normalized values of the
     row compared to the max.
+
+    Parameters
+    ----------
+    groupby : str
+        the column to group by
+    
+    input_col_name : str
+        the input column to normalize
+
+    output_col_name : str
+        the column to write the normalized values to
     """
 
     def __init__(self, groupby: str, input_col_name: str, output_col_name: str):
-        """Initializes the AddNormalizedColumn processor.
 
-        Args:
-            groupby (str): the column to group by
-            input_col_name (str): the input column to normalize
-            output_col_name (str): the column to write the normalized values to
-        """
         self._groupby = groupby
         self._input_col_name = input_col_name
         self._output_col_name = output_col_name
@@ -160,17 +155,21 @@ class ExpandColumn(Processor):
     """
     Processor that turns one column into more than one column by mapping values
     of a column to multiple values.
-    """ ""
+
+    Parameters
+    ----------
+    input_col_name : str
+        the column name to map from
+
+    output_col_names : List[str]
+        the column names to map to
+
+    mapping : dict
+        a dictionary mapping a value to a list of values
+    """
 
     def __init__(self, input_col_name: str, output_col_names: List[str], mapping: dict):
-        """Initializes the ExpandColumn processor.
 
-        Args:
-            input_col_name (str): the column name to map from
-            output_col_names (List[str]): the column names to map to
-            mapping (dict): a dictionary mapping a column name to map from to a
-                list of column names to map to
-        """
         self._input_col_name = input_col_name
         self._output_col_names = output_col_names
         self._mapping = mapping
@@ -210,14 +209,14 @@ class Reindex(Processor):
 
     Reindexing is useful for grouping similar results in the final
     visualization.
+
+    Parameters
+    ----------
+    reindex_names : List[str]
+        A list of column names to reindex
     """
 
     def __init__(self, reindex_names: List[str]):
-        """Initializes Reindex processor.
-
-        Args:
-            reindex_names (List[str]): a list of column names to reindex
-        """
         self._reindex_names = reindex_names
 
     def process(self, input_eval: Evaluation) -> Evaluation:
@@ -228,15 +227,15 @@ class Reindex(Processor):
 
 class SortIndex(Processor):
     """
-    Processor that sorts an evaluation by indices for easier visualization.
+    Processor that sorts an evaluation by indices.
+
+    Parameters
+    ----------
+    sort_names : List[str]
+        a list of index names to sort by
     """
 
     def __init__(self, sort_names: List[str]):
-        """Initializes SortIndex processor
-
-        Args:
-            sort_names (List[str]): a list of column names to reindex
-        """
         self._sort_names = sort_names
 
     def process(self, input_eval: Evaluation) -> Evaluation:
@@ -248,17 +247,31 @@ class SortIndex(Processor):
 class NormalizeAround(Processor):
     """
     Processor that normalizes all specified values in an Evaluation around
-    a specified index value.
-
-    The Evaluation being processed must have a "project" column which can
-    be grouped
+    a baseline that is chosen based on a specified index name and value.
 
     All normalized values are between 0 and 1, with 0.5 being the baseline.
     This is useful in creating styles that show relative differences between
     each row and the baseline.
 
-    One use is normalizing around a certain synthesis tool, such as Vivado.
-    Example: NormalizeAround({"bram": 1}, "project", "synthesis_tool", "vivado")
+    Parameters
+    ----------
+    normalize_direction : dict
+        a dictionary mapping column names to 1 or -1. If a value is
+        optimized when smaller, set the negation to 1. If it is optimized
+        when larger, set the negation to -1. If there is no entry,
+        normalization is skipped.
+
+    group_by : str, optional
+        the column name used to group results before finding the baseline
+        of the group and normalizing, by default "project"
+
+    idx_name : str, optional
+        the name of the index used to find the baseline result. The baseline
+        result will become the baseline which all other grouped results will be
+        normalized by, by default "synthesis_tool"
+
+    idx_value : str, optional
+        the value of the baseline result at idx_name, by default "vivado"
     """
 
     def __init__(
@@ -268,20 +281,6 @@ class NormalizeAround(Processor):
         idx_name: str = "synthesis_tool",
         idx_value: str = "vivado",
     ):
-        """Initializes the NormalizeAround processor.
-
-        Args:
-            normalize_direction (dict): a dictionary mapping column
-                names to 1 or -1. If a value is optimized when smaller, set the
-                negation to 1. If it is optimized when larger, set the negation
-                to -1. If there is no entry, normalization is skipped.
-            group_by (str): the column name used to group results before
-                finding the baseline of the group and normalizing
-            idx_name (str): the name of the index used to find the baseline
-                result. The baseline result will become the baseline which
-                all other grouped results will be normalized by.
-            idx_value (str): the value of the baseline result at idx_name
-        """
         self._groupby = group_by
         self._idx_name = idx_name
         self._idx_value = idx_value
@@ -332,17 +331,17 @@ class Normalize(Processor):
     performed calculations to compare multiple evaluations. For example, you
     can subtract one evaluation from another, then apply this processor before
     styling.
+
+    Parameters
+    ----------
+    normalize_direction : dict
+        a dictionary mapping column names to 1 or -1. If a value is optimized
+        when smaller, set the negation to 1. If it is optimized when larger, set
+        the negation to -1. If there is no entry, normalization is skipped.
     """
 
     def __init__(self, normalize_direction: dict):
-        """Initializes the NormalizeAround processor.
 
-        Args:
-            normalize_direction (dict): a dictionary mapping column
-                names to 1 or -1. If a value is optimized when smaller, set the
-                negation to 1. If it is optimized when larger, set the negation
-                to -1. If there is no entry, normalization is skipped.
-        """
         self._column_names = []
         self._column_negations = []
         for name, negation in normalize_direction.items():
