@@ -1,14 +1,32 @@
 """ Defines helper functions useful for classes """
-from typing import Union
+from typing import Union, Any
+
+from matplotlib.colors import Colormap
+
 
 def flatten(input_dict: dict) -> dict:
     """
     Given an input dictionary that may contain nested dictionaries, return
     a new dictionary that is flattened such that there are no dictionary
-    values. Keys in the returned dictionary are a period-delimited list of
+    values.
+
+    Keys in the returned dictionary are a period-delimited list of
     the keys used to index the original dictionary.
 
-    Example: {"a": {"b": "c"}} => {"a.b": "c"}
+    Parameters
+    ----------
+    input_dict : dict
+        a potentially-nested dictionary
+
+    Returns
+    -------
+    dict
+        a new flattened input dictionary
+    
+    Examples
+    --------
+    >>> flatten({"a": {"b": "c"}})
+    {"a.b": "c"}
     """
     new_dict = {}
     for k_1, v_1 in input_dict.items():
@@ -25,14 +43,39 @@ def flatten(input_dict: dict) -> dict:
 def get_versions(obj: dict) -> dict:
     """
     Given a flattened object decoded from meta.json, return a dictionary of
-    the versions in that object
+    the versions in that object.
+
+    Filters the dictionary for all keys that start with `versions.`
+
+    Parameters
+    ----------
+    obj : dict
+        a flattened dictionary
+
+    Returns
+    -------
+    dict
+        a copy of the input dictionary only containing keys starting with
+        `versions.`
     """
-    return {k:v for k, v in obj.items() if k.startswith("versions.")}
+    return {k: v for k, v in obj.items() if k.startswith("versions.")}
 
 
 def rescale_actual_freq(freq: Union[int, float]) -> Union[int, float]:
     """
-    Given an int or float, returns frequency in megahertz by autoscaling
+    Given a frequency with an unspecified unit, returns frequency in megahertz
+    by assuming the original unit is hertz if input frequency is greater than 1
+    million.
+
+    Parameters
+    ----------
+    freq : Union[int, float]
+        a number that is a frequency
+
+    Returns
+    -------
+    Union[int, float]
+        the input frequency in megahertz
     """
     one_mhz = 1_000_000
     if freq > one_mhz:
@@ -41,10 +84,28 @@ def rescale_actual_freq(freq: Union[int, float]) -> Union[int, float]:
         return freq
 
 
-def get_actual_freq(obj: dict, hydra_clock_names: list = None):
+def get_actual_freq(obj: dict, hydra_clock_names: list = None) -> Union[int, float]:
     """
     Given an object decoded from meta.json, return the actual frequency
     as an integer in megahertz.
+
+    Since a meta.json object might contain multiple frequencies, we look through
+    all clock names specified in hydra_clock_names and use the first one in the
+    list. If none of the specified clock names exists in the object, we use
+    the shortest clock name to find the frequency.
+
+    Parameters
+    ----------
+    obj : dict
+        A decoded meta.json file.
+
+    hydra_clock_names : list, optional
+        An ordered list of clock names to look for in the obj, by default None
+
+    Returns
+    -------
+    Union[int, float]
+        the frequency of the actual clock specified in the object
     """
     # set default clock names
     if hydra_clock_names is None:
@@ -61,23 +122,39 @@ def get_actual_freq(obj: dict, hydra_clock_names: list = None):
                 return rescale_actual_freq(obj[key])
 
         # if none of those exist, choose the shortest one or return None
-        max_freq_keys = [x for x in obj.keys() if
-                         x.startswith("max_freq.") and x.endswith(".actual")]
+        max_freq_keys = [
+            x for x in obj.keys() if x.startswith("max_freq.") and x.endswith(".actual")
+        ]
         if len(max_freq_keys) > 0:
             shortest_clock_name = min(max_freq_keys, key=len)
             return rescale_actual_freq(obj[shortest_clock_name])
         else:
             return None
 
-def get_styling(val, cmap):
+
+def get_styling(val: Any, cmap: Colormap) -> str:
     """
     Given a value, returns a CSS string with the background-color set to the
     color in the cmap, or an empty CSS string if the value is not a float
     between 0 and 1.
+
+    Parameters
+    ----------
+    val : Any
+        A value that needs to be styled
+
+    cmap : Colormap
+        A colormap to use when styling the background
+
+    Returns
+    -------
+    str
+        a CSS string specifying the background color based on the color map,
+        or an empty string if the val is not a float between 0 and 1.
     """
     if isinstance(val, float) and 0 <= val <= 1:
         color = tuple([int(x * 255) for x in cmap(val)[:-1]])
-        hex_color = '#%02x%02x%02x' % color # convert to hex format #FFFFFF
+        hex_color = "#%02x%02x%02x" % color  # convert to hex format #FFFFFF
         return "background-color: {}".format(hex_color)
     else:
         return ""
