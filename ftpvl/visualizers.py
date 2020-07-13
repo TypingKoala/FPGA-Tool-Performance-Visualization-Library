@@ -1,11 +1,11 @@
-""" This module defines visualizers for ftpvl """
+""" Visualizers are used for displaying the results to the user in an IPython notebook. """
 from typing import List
 
 from ftpvl.evaluation import Evaluation
 
 class Visualizer:
     """
-    Represents a visualizer that can generate and display styled evaluations.
+    Superclass for visualizers that can generate and display styled evaluations.
     """
 
     def __init__(self):
@@ -28,10 +28,21 @@ class Visualizer:
 
 class DebugVisualizer(Visualizer):
     """
-    Represents a visualizer that will print the given Evaluation, possibly with
-    version information.
+    Represents a visualizer that displays a single Evaluation instance, possibly
+    with version information.
 
-    Useful for debugging.
+    Args:
+        evaluation (Evaluation): the Evaluation to display
+        version_info (bool, optional): Flag to display version information
+            from the build results in the final visualization. Defaults to
+            False.
+        custom_styles (List[dict], optional): Specify additional styling
+            for the final visualzation. See formatting here:
+            https://pandas.pydata.org/pandas-docs/stable/user_guide/style.html#Table-styles
+        column_order(List[str], optional): Specify the columns and ordering
+            in the final visualization. Overrides version_info, so you must
+            specify version columns in addition. Defaults to None, which
+            will set the column order to a preset useful for VtR.
     """
 
     def __init__(
@@ -41,21 +52,6 @@ class DebugVisualizer(Visualizer):
         custom_styles: List[dict] = None,
         column_order: List[str] = None,
     ):
-        """Initialize a visualizer that displays a single Evaluation instance.
-
-        Args:
-            evaluation (Evaluation): the Evaluation to display
-            version_info (bool, optional): Flag to display version information
-                from the build results in the final visualization. Defaults to
-                False.
-            custom_styles (List[dict], optional): Specify additional styling
-                for the final visualzation. See formatting here:
-                https://pandas.pydata.org/pandas-docs/stable/user_guide/style.html#Table-styles
-            column_order(List[str], optional): Specify the columns and ordering
-                in the final visualization. Overrides version_info, so you must
-                specify version columns in addition. Defaults to None, which
-                will set the column order to a preset useful for VtR.
-        """
         super().__init__()
         self._evaluation = evaluation
         self._version_info = version_info
@@ -102,6 +98,9 @@ class DebugVisualizer(Visualizer):
             .highlight_null("yellow")
             .set_na_rep("-")
         )
+    
+    def get_visualization(self):
+        pass
 
 
 class SingleTableVisualizer(Visualizer):
@@ -109,9 +108,21 @@ class SingleTableVisualizer(Visualizer):
     Represents a visualizer for a styled single table, possibly with version
     information.
 
-    Methods:
-            get_visualization(): returns a displayable visualizaton, can be
-            displayed by calling display() in an interactive Python environment
+    Args:
+        evaluation (Evaluation): the Evaluation with values to display
+        style_eval (Evaluation): the Evaluation to use for styling. Should
+            be processed using a Style, all values are valid CSS strings
+            or empty.
+        version_info (bool, optional): Flag to display version information
+            from the build results in the final visualization. Defaults to
+            False.
+        custom_styles (List[dict], optional): Specify additional styling
+            for the final visualzation. See formatting here:
+            https://pandas.pydata.org/pandas-docs/stable/user_guide/style.html#Table-styles
+        column_order(List[str], optional): Specify the columns and ordering
+            in the final visualization. Overrides version_info, so you must
+            specify version columns in addition. Defaults to None, which
+            will set the column order to a preset useful for VtR.
     """
 
     def __init__(
@@ -122,24 +133,6 @@ class SingleTableVisualizer(Visualizer):
         custom_styles: List[dict] = None,
         column_order: List[str] = None,
     ):
-        """Initialize a visualizer that displays a single Evaluation instance.
-
-        Args:
-            evaluation (Evaluation): the Evaluation with values to display
-            style_eval (Evaluation): the Evaluation to use for styling. Should
-                be processed using a Style, all values are valid CSS strings
-                or empty.
-            version_info (bool, optional): Flag to display version information
-                from the build results in the final visualization. Defaults to
-                False.
-            custom_styles (List[dict], optional): Specify additional styling
-                for the final visualzation. See formatting here:
-                https://pandas.pydata.org/pandas-docs/stable/user_guide/style.html#Table-styles
-            column_order(List[str], optional): Specify the columns and ordering
-                in the final visualization. Overrides version_info, so you must
-                specify version columns in addition. Defaults to None, which
-                will set the column order to a preset useful for VtR.
-        """
         super().__init__()
         self._evaluation = evaluation
         self._style_eval = style_eval
@@ -188,6 +181,9 @@ class SingleTableVisualizer(Visualizer):
             .highlight_null("yellow")
             .set_na_rep("-")
         )
+
+    def get_visualization(self):
+        pass
 
 
 # class TwoTableVisualizer(Visualizer):
