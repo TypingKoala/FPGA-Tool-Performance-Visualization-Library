@@ -29,7 +29,7 @@ Let's get started by installing FTPVL. The easiest way is to download it using
 In a Python notebook, you can also perform command-line operations by writing the
 the command into a cell prefixed with an ``!``:
 
-.. code-block::
+.. code-block:: python
     :lineno-start: 1
 
     !pip install ftpvl
