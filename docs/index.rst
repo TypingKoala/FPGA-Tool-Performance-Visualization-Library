@@ -8,30 +8,61 @@ the data collection, analysis, and visualization of performance metrics for
 Symbiflow development. Although it was made with Symbiflow in mind, it is highly
 extensible for future integration with other software.
 
-
-Getting Started
-===============
-
-
-Examples
-========
-Let's look at some real-world examples to see FTPVL at work!
+🚀 Getting Started
+===================
+Learn how to get up and running with FTPVL.
 
 .. toctree::
+   :caption: Getting Started
+   :hidden:
+
+   intro/firststeps
+   intro/examples
+
+:doc:`intro/firststeps`
+   The first steps for using FTPVL.
+
+:doc:`intro/examples`
+   Look at some real-world examples to see FTPVL at work!
+
+
+✈ Overview
+==========
+Dive into the main features of FTPVL.
+
+.. toctree::
+   :caption: Overview
    :hidden:
    
-   examples/singledebugvisualizer
+   topics/evaluation
+   topics/fetchers
+   topics/processors
+   topics/styles
+   topics/visualizers
 
-:doc:`examples/singledebugvisualizer`
-   Debug processing steps using the `SingleDebugVisualizer`
+:doc:`topics/evaluation`
+   Main data structure used for manipulation.
+
+:doc:`topics/fetchers`
+   Ingest data from Hydra or a JSON dataframe.
+
+:doc:`topics/processors`
+   Perform processing on the results using a processing pipeline.
+
+:doc:`topics/styles`
+   Generate styling for custom visualizations.
+
+:doc:`topics/visualizers`
+   Visualize the processed data.
 
 
-Reference
-=========
+📖 Reference
+============
 .. toctree::
+   :caption: Reference
    :hidden:
    
    topics/api
 
 :doc:`topics/api`
-   Learn about the API
+   Learn about the API of FTPVL.
