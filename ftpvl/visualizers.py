@@ -100,7 +100,7 @@ class DebugVisualizer(Visualizer):
         )
     
     def get_visualization(self):
-        pass
+        return super().get_visualization()
 
 
 class SingleTableVisualizer(Visualizer):
@@ -183,7 +183,7 @@ class SingleTableVisualizer(Visualizer):
         )
 
     def get_visualization(self):
-        pass
+        return super().get_visualization()
 
 
 # class TwoTableVisualizer(Visualizer):

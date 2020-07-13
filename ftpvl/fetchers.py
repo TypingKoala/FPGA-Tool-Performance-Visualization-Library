@@ -149,7 +149,7 @@ class HydraFetcher(Fetcher):
         return pd.DataFrame(processed_data).dropna(axis=1, how="all")
     
     def get_evaluation(self) -> Evaluation:
-        pass
+        return super().get_evaluation()
 
 
 class JSONFetcher(Fetcher):
@@ -192,4 +192,4 @@ class JSONFetcher(Fetcher):
             )
 
     def get_evaluation(self) -> Evaluation:
-        pass
+        return super().get_evaluation()
