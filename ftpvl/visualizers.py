@@ -28,21 +28,37 @@ class Visualizer:
 
 class DebugVisualizer(Visualizer):
     """
-    Represents a visualizer that displays a single Evaluation instance, possibly
-    with version information.
+    Represents a visualizer that will print the given Evaluation, possibly with
+    version information.
 
-    Args:
-        evaluation (Evaluation): the Evaluation to display
-        version_info (bool, optional): Flag to display version information
-            from the build results in the final visualization. Defaults to
-            False.
-        custom_styles (List[dict], optional): Specify additional styling
-            for the final visualzation. See formatting here:
-            https://pandas.pydata.org/pandas-docs/stable/user_guide/style.html#Table-styles
-        column_order(List[str], optional): Specify the columns and ordering
-            in the final visualization. Overrides version_info, so you must
-            specify version columns in addition. Defaults to None, which
-            will set the column order to a preset useful for VtR.
+    Useful for debugging.
+
+    Parameters
+    ----------
+    evaluation : Evaluation
+        the Evaluation to display
+
+    version_info : bool, optional
+        Flag to display version information from the build results in the
+        final visualization, by default False
+
+    custom_styles : List[dict], optional
+        Specify additional styling for the final visualzation. See
+        formatting here:
+        https://pandas.pydata.org/pandas-docs/stable/user_guide/style.html#Table-styles,
+        by default None
+
+    column_order : List[str], optional
+        Specify the columns and ordering  in the final visualization.
+        Overrides version_info, so you must specify version columns in
+        addition. Defaults to None, which will set the column order to a
+        preset useful for VtR.
+
+    Methods
+    -------
+    get_visualization() :
+        returns a displayable visualizaton, can be displayed by calling
+        display() in an interactive Python environment
     """
 
     def __init__(
@@ -108,21 +124,36 @@ class SingleTableVisualizer(Visualizer):
     Represents a visualizer for a styled single table, possibly with version
     information.
 
-    Args:
-        evaluation (Evaluation): the Evaluation with values to display
-        style_eval (Evaluation): the Evaluation to use for styling. Should
-            be processed using a Style, all values are valid CSS strings
-            or empty.
-        version_info (bool, optional): Flag to display version information
-            from the build results in the final visualization. Defaults to
-            False.
-        custom_styles (List[dict], optional): Specify additional styling
-            for the final visualzation. See formatting here:
-            https://pandas.pydata.org/pandas-docs/stable/user_guide/style.html#Table-styles
-        column_order(List[str], optional): Specify the columns and ordering
-            in the final visualization. Overrides version_info, so you must
-            specify version columns in addition. Defaults to None, which
-            will set the column order to a preset useful for VtR.
+    Parameters
+    ----------
+    evaluation : Evaluation
+        the Evaluation with values to display
+
+    style_eval : Evaluation
+        the Evaluation to use for styling. Should be processed using a
+        Style, all values are valid CSS strings or empty.
+
+    version_info : bool, optional
+        Flag to display version information from the build results in the
+        final visualization, by default False
+
+    custom_styles : List[dict], optional
+        Specify additional styling for the final visualzation. See
+        formatting here:
+        https://pandas.pydata.org/pandas-docs/stable/user_guide/style.html#Table-styles,
+        by default None
+
+    column_order : List[str], optional
+        Specify the columns and ordering in the final visualization.
+        Overrides version_info, so you must specify version columns in
+        addition. Defaults to None, which will set the column order to a
+        preset useful for VtR.
+
+    Methods
+    -------
+    get_visualization() :
+        returns a displayable visualizaton, can be
+        displayed by calling display() in an interactive Python environment
     """
 
     def __init__(
