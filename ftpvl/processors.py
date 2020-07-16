@@ -2,6 +2,7 @@
 
 from typing import List
 import pandas as pd
+import numpy as np
 from ftpvl.evaluation import Evaluation
 
 
@@ -370,3 +371,52 @@ class Normalize(Processor):
         input_df = input_eval.get_df()
         new_df = self._normalize(input_df)
         return Evaluation(new_df, input_eval.get_eval_id())
+
+class RelativeDiff(Processor):
+    """
+    Processor that outputs the relative difference between evaluation A and B.
+
+    All numeric metrics will be compared, and all others will not be included in
+    the output. B is compared to A, where the output is greater than 0 if B is
+    greater than A, and less than 0 otherwise.
+
+    The calculation performed is (B - A) / A, where B is the evaluation that
+    this processor is being applied to and A is the evaluation passed as a
+    parameter.
+
+    Parameters
+    ----------
+    a : Evaluation
+        The evaluation to use when comparing against the Evaluation that is
+        being processed. Corresponds to evaluation A in the description.
+
+    Examples
+    --------
+    >>> a = Evaluation(pd.DataFrame(
+        data=[
+            {"x": 1, "y": 5},
+            {"x": 4, "y": 10}
+        ]
+    ))
+    >>> b = Evaluation(pd.DataFrame(
+        data=[
+            {"x": 2, "y": 20},
+            {"x": 2, "y": 2}
+        ]
+    ))
+    >>> b.process([RelativeDiff(a)]).get_df()
+         x    y
+    0  1.0  3.0
+    1 -0.5 -0.8
+    """
+
+    def __init__(self, a: Evaluation):
+        self.a = a
+
+    def process(self, b: Evaluation) -> Evaluation:
+        a_nums = self.a.get_df().select_dtypes(include=[np.number])
+        b_nums = b.get_df().select_dtypes(include=[np.number])
+        diff = (b_nums - a_nums) / a_nums
+        difference_eval = Evaluation(diff)
+
+        return difference_eval

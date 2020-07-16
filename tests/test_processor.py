@@ -15,6 +15,7 @@ from ftpvl.processors import (
     SortIndex,
     NormalizeAround,
     Normalize,
+    RelativeDiff
 )
 
 from ftpvl.evaluation import Evaluation
@@ -442,3 +443,35 @@ class TestProcessor:
         )
 
         assert_frame_equal(result, expected)
+
+    def test_relativediff(self):
+        """
+        Test if difference is correct
+        """
+        a = pd.DataFrame(
+            data=[
+                {"a": 2, "b": 2},
+                {"a": 5, "b": 10},
+            ]
+        )
+        b = pd.DataFrame(
+            data=[
+                {"a": 4, "b": 1},
+                {"a": 20, "b": 1},
+            ]
+        )
+
+        a_eval = Evaluation(a)
+        b_eval = Evaluation(b)
+
+        diff = b_eval.process([RelativeDiff(a_eval)])
+        result = diff.get_df()
+
+        expected = pd.DataFrame(
+            data=[
+                {"a": 1.0, "b": -0.5},
+                {"a": 3.0, "b": -0.9},
+            ]
+        )
+
+        assert_frame_equal(expected, result)
