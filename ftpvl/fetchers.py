@@ -48,6 +48,10 @@ class HydraFetcher(Fetcher):
 
     Parameters
     ----------
+    project : str, optional
+        The project name to use when fetching from Hydra
+    jobset : str, optional
+        The jobset name to use when fetching from Hydra
     eval_num : int, optional
         A non-negative integer for the evaluation number to download,
         with `0` being the latest evaluation, by default 0
@@ -60,9 +64,16 @@ class HydraFetcher(Fetcher):
     """
 
     def __init__(
-        self, eval_num: int = 0, mapping: dict = None, hydra_clock_names: list = None
+        self,
+        project: str,
+        jobset: str,
+        eval_num: int = 0,
+        mapping: dict = None,
+        hydra_clock_names: list = None
     ) -> None:
         super().__init__()
+        self.project = project
+        self.jobset = jobset
         self.eval_num = eval_num
         self.mapping = mapping
         self.hydra_clock_names = hydra_clock_names
@@ -93,7 +104,7 @@ class HydraFetcher(Fetcher):
         """
         # get build numbers from eval_num
         resp = requests.get(
-            "https://hydra.vtr.tools/jobset/dusty/fpga-tool-perf/evals",
+            f"https://hydra.vtr.tools/jobset/{self.project}/{self.jobset}/evals",
             headers={"Content-Type": "application/json"},
         )
         if resp.status_code != 200:

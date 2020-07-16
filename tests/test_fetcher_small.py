@@ -27,6 +27,8 @@ class TestHydraFetcherSmall(unittest.TestCase):
         Calling init should save the arguments as an instance variable.
         """
         fetcher = HydraFetcher(
+            project="dusty",
+            jobset="fpga-tool-perf",
             eval_num=0,
             mapping={"a": "c", "b": "d"},
             hydra_clock_names=["clk", "clk1"]
@@ -61,7 +63,10 @@ class TestHydraFetcherSmall(unittest.TestCase):
             for eval_num in range(0, 3):
                 with self.subTest(eval_num=eval_num):
                     # if mapping is not defined, should not remap
-                    hf = HydraFetcher(eval_num=eval_num)
+                    hf = HydraFetcher(
+                        project="dusty",
+                        jobset="fpga-tool-perf",
+                        eval_num=eval_num)
                     result = hf.get_evaluation().get_df()
 
                     col = [x for x in range(eval_num * 4, eval_num * 4 + 4)]
@@ -93,8 +98,11 @@ class TestHydraFetcherSmall(unittest.TestCase):
                     m.get(url, json=payload) # setup /meta.json request mock
 
             # test exclusion
-            hf1 = HydraFetcher(eval_num=0,
-                               mapping={"build_num": "build_num"})
+            hf1 = HydraFetcher(
+                project="dusty",
+                jobset="fpga-tool-perf",
+                eval_num=0,
+                mapping={"build_num": "build_num"})
             result1 = hf1.get_evaluation().get_df()
 
             col = [x for x in range(4)]
@@ -103,8 +111,11 @@ class TestHydraFetcherSmall(unittest.TestCase):
             assert_frame_equal(result1, expected1)
 
             # test renaming
-            hf2 = HydraFetcher(eval_num=0,
-                               mapping={"build_num": "renamed_num"})
+            hf2 = HydraFetcher(
+                project="dusty",
+                jobset="fpga-tool-perf",
+                eval_num=0,
+                mapping={"build_num": "renamed_num"})
             result2 = hf2.get_evaluation().get_df()
 
             col = [x for x in range(4)]
@@ -158,7 +169,11 @@ class TestHydraFetcherSmall(unittest.TestCase):
 
             for hydra_clock_name, expected_clock in test_cases:
                 with self.subTest(hydra_clock_name=hydra_clock_name):
-                    hf = HydraFetcher(eval_num=0, hydra_clock_names=hydra_clock_name)
+                    hf = HydraFetcher(
+                        project="dusty",
+                        jobset="fpga-tool-perf",
+                        eval_num=0,
+                        hydra_clock_names=hydra_clock_name)
                     result = hf.get_evaluation().get_df()
 
                     expected_col = [expected_clock for _ in range(4)]
@@ -166,7 +181,11 @@ class TestHydraFetcherSmall(unittest.TestCase):
                     assert_series_equal(result["freq"], expected_series)
             
             # test that the shortest clock name is chosen if no matches
-            hf = HydraFetcher(eval_num=0, hydra_clock_names=[])
+            hf = HydraFetcher(
+                project="dusty",
+                jobset="fpga-tool-perf",
+                eval_num=0,
+                hydra_clock_names=[])
             result = hf.get_evaluation().get_df()
 
             expected_col = [100 for _ in range(4)]

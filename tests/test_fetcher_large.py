@@ -46,7 +46,11 @@ class TestHydraFetcherLarge(unittest.TestCase):
             "runtime.bitstream": "bitstream",
             "runtime.total": "total"
         }
-        fetcher = HydraFetcher(eval_num=0, mapping=df_mappings)
+        fetcher = HydraFetcher(
+            project="dusty",
+            jobset="fpga-tool-perf",
+            eval_num=0,
+            mapping=df_mappings)
 
         self.assertEqual(fetcher.eval_num, 0)
         self.assertEqual(fetcher.mapping, df_mappings)
@@ -84,7 +88,10 @@ class TestHydraFetcherLarge(unittest.TestCase):
                     # if mapping is not defined, should not remap
                     if len(evals_json_decoded["evals"][eval_num]["builds"]) == 0:
                         continue # otherwise hydrafetcher will throw error
-                    hf = HydraFetcher(eval_num=eval_num)
+                    hf = HydraFetcher(
+                        project="dusty",
+                        jobset="fpga-tool-perf",
+                        eval_num=eval_num)
                     result = hf.get_evaluation().get_df()
 
                     expected_num_rows = len(evals_json_decoded['evals'][eval_num]['builds'])

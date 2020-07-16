@@ -15,7 +15,10 @@ Take a look at the notebooks below to demonstrate the functionality of FTPVL.
 3. [Comparing two different Evaluations](https://colab.research.google.com/drive/1I7InmA6210vIIwdQ7TGHE6aF_WwIm1dM?usp=sharing)
 
 ## Documentation
-Doucmentation of this library is generated in the `docs/` folder by reading
+Extensive documentation, including a *Getting Started* guide, is available on
+[ReadTheDocs](https://ftpvl.readthedocs.io).
+
+Documentation of this library is generated in the `docs/` folder by reading
 the docstrings from the source code.
 The website is generated using [Sphinx](https://www.sphinx-doc.org/en/master/)
 using the [Read the Docs theme](https://github.com/readthedocs/sphinx_rtd_theme).
@@ -41,4 +44,12 @@ management and processing. Other dependencies are explained below:
 * `black`: for auto-formatting
 * `sphinx`: for documentation generation
 * `sphinx-rtd-theme`: for documentation generation (theme)
+
+## Changes
+### 0.1.5
+* Added support for custom projects and jobsets in HydraFetcher.
+
+### 0.1.4
+* Added RelativeDiff processor.
+* Updated some internal docstrings
 
