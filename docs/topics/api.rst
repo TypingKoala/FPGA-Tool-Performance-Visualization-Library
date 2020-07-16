@@ -64,6 +64,9 @@ Processors API
 .. autoclass:: ftpvl.processors.StandardizeTypes
     :members:
 
+.. autoclass:: ftpvl.processors.RelativeDiff
+    :members:
+
 .. _topics-api-styles:
 
 Styles API
