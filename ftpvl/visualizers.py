@@ -1,15 +1,11 @@
-""" This module defines visualizers for ftpvl """
+""" Visualizers are used for displaying the results to the user in an IPython notebook. """
 from typing import List
 
 from ftpvl.evaluation import Evaluation
 
 class Visualizer:
     """
-    Represents a visualizer that can generate and display styled evaluations.
-
-    Methods:
-        get_visualization(): returns a displayable visualizaton, can be
-            displayed by calling display() in an interactive Python environment
+    Superclass for visualizers that can generate and display styled evaluations.
     """
 
     def __init__(self):
@@ -23,7 +19,8 @@ class Visualizer:
 
     def get_visualization(self):
         """
-        Returns a displayable object using IPython display.
+        Returns a displayable object which can be displayed by calling display()
+        in an interactive Python environment.
         """
         self._generate()
         return self._visualization
@@ -117,6 +114,9 @@ class DebugVisualizer(Visualizer):
             .highlight_null("yellow")
             .set_na_rep("-")
         )
+    
+    def get_visualization(self):
+        return super().get_visualization()
 
 
 class SingleTableVisualizer(Visualizer):
@@ -212,6 +212,9 @@ class SingleTableVisualizer(Visualizer):
             .highlight_null("yellow")
             .set_na_rep("-")
         )
+
+    def get_visualization(self):
+        return super().get_visualization()
 
 
 # class TwoTableVisualizer(Visualizer):

@@ -1,4 +1,4 @@
-""" This module defines fetchers for ftpvl. """
+""" Fetchers are responsible for ingesting and standardizing data for future processing. """
 import json
 from typing import Any, Dict, List
 
@@ -51,11 +51,9 @@ class HydraFetcher(Fetcher):
     eval_num : int, optional
         A non-negative integer for the evaluation number to download,
         with `0` being the latest evaluation, by default 0
-
     mapping : dict, optional
         A dictionary mapping input column names to output
         column names, if needed for remapping, by default None
-
     hydra_clock_names : list, optional
         An optional ordered list of strings used in finding
         the actual frequency for each build result, by default None
@@ -149,6 +147,9 @@ class HydraFetcher(Fetcher):
             processed_data.append(processed_row)
 
         return pd.DataFrame(processed_data).dropna(axis=1, how="all")
+    
+    def get_evaluation(self) -> Evaluation:
+        return super().get_evaluation()
 
 
 class JSONFetcher(Fetcher):
@@ -189,3 +190,6 @@ class JSONFetcher(Fetcher):
             return loaded_df.filter(items=self.mapping.keys()).rename(
                 columns=self.mapping
             )
+
+    def get_evaluation(self) -> Evaluation:
+        return super().get_evaluation()

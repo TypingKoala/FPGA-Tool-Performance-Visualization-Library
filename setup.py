@@ -18,7 +18,7 @@ URL = 'https://github.com/TypingKoala/FPGA-Tool-Performance-Visualization-Librar
 EMAIL = 'me@johnnybui.com'
 AUTHOR = 'Johnny Bui'
 REQUIRES_PYTHON = '>=3.6.0'
-VERSION = '0.1.2'
+VERSION = '0.1.3'
 
 # What packages are required for this module to be executed?
 REQUIRED = [

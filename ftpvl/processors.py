@@ -1,4 +1,4 @@
-""" This module defines processors for ftpvl. """
+""" Processors transform Evaluations to be more useful when visualized. """
 
 from typing import List
 import pandas as pd

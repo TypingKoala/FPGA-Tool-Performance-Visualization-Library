@@ -1,4 +1,4 @@
-""" This module defines evaluations for ftpvl. """
+""" Evaluations store the test results from a single execution of the test suite. """
 
 from typing import List, Union
 import pandas as pd
