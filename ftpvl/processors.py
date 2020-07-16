@@ -393,17 +393,15 @@ class RelativeDiff(Processor):
     Examples
     --------
     >>> a = Evaluation(pd.DataFrame(
-        data=[
-            {"x": 1, "y": 5},
-            {"x": 4, "y": 10}
-        ]
-    ))
+    ... data=[
+    ...     {"x": 1, "y": 5},
+    ...     {"x": 4, "y": 10}
+    ... ]))
     >>> b = Evaluation(pd.DataFrame(
-        data=[
-            {"x": 2, "y": 20},
-            {"x": 2, "y": 2}
-        ]
-    ))
+    ... data=[
+    ...     {"x": 2, "y": 20},
+    ...     {"x": 2, "y": 2}
+    ... ]))
     >>> b.process([RelativeDiff(a)]).get_df()
          x    y
     0  1.0  3.0
