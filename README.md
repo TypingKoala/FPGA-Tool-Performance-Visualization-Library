@@ -33,6 +33,7 @@ make html
 * `pandas`: for data management and processing ([website](https://pandas.pydata.org/))
 * `seaborn`: for colormap generation ([website](https://seaborn.pydata.org/))
 * `jinja2`: for visualization generation ([website](https://jinja.palletsprojects.com/))
+* `scipy`: for support of built-in aggregators([website](https://www.scipy.org/))
 
 ### Development Dependencies
 * `requests-mock`: for mocking request object for testing fetchers ([website](https://requests-mock.readthedocs.io/en/latest/))
