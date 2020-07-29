@@ -1,0 +1,11 @@
+pandas
+requests-mock
+seaborn
+jinja2
+
+pylint
+pytest
+coverage
+black
+sphinx
+sphinx-rtd-theme
