@@ -5,18 +5,7 @@ from pandas.testing import (
     assert_frame_equal, assert_series_equal, assert_index_equal
 )
 
-from ftpvl.processors import (
-    AddNormalizedColumn,
-    CleanDuplicates,
-    MinusOne,
-    StandardizeTypes,
-    ExpandColumn,
-    Reindex,
-    SortIndex,
-    NormalizeAround,
-    Normalize,
-    RelativeDiff
-)
+from ftpvl.processors import *
 
 from ftpvl.evaluation import Evaluation
 
@@ -34,6 +23,9 @@ class TestProcessor:
     SortIndex()
     NormalizeAround()
     Normalize()
+    FilterByIndex()
+    Aggregate()
+    GeomeanAggregate()
     """
 
     def test_minusone(self):
@@ -505,3 +497,98 @@ class TestProcessor:
         )
 
         assert_frame_equal(expected, result)
+
+    def test_filterbyindex(self):
+        """ tests if filtering by index works for multi-index dataframe """
+        # test dataframe
+        # {"group": "a", "key": "a", "value": 10},
+        # {"group": "a", "key": "b", "value": 5},
+        # {"group": "a", "key": "c", "value": 3},
+        # {"group": "b", "key": "d", "value": 100},
+        # {"group": "b", "key": "e", "value": 31}
+
+        idx_arrays = [["a", "a", "a", "b", "b"], ["a", "b", "c", "d", "e"]]
+        index = pd.MultiIndex.from_arrays(idx_arrays, names=("group", "key"))
+        df = pd.DataFrame({"value": [10, 5, 3, 100, 31]}, index=index)
+        eval1 = Evaluation(df, eval_id=10)
+
+        # filter by first index
+        pipeline = [FilterByIndex("group", "a")]
+        result = eval1.process(pipeline)
+
+        expected_index = pd.Index(["a", "b", "c"], name="key")
+        expected_df = pd.DataFrame({"value": [10, 5, 3]}, index=expected_index)
+
+        assert_frame_equal(result.get_df(), expected_df)
+        assert result.get_eval_id() == 10
+
+        # filter by second index
+        pipeline = [FilterByIndex("key", "a")]
+        result = eval1.process(pipeline)
+
+        expected_index = pd.Index(["a"], name="group")
+        expected_df = pd.DataFrame({"value": [10]}, index=expected_index)
+
+        assert_frame_equal(result.get_df(), expected_df)
+        assert result.get_eval_id() == 10
+
+    def test_aggregate(self):
+        """ Test aggregate processor with custom aggregator functions """
+        df = pd.DataFrame(
+            [
+                {"a": 1, "b": 1, "c": 5},
+                {"a": 1, "b": 2, "c": 4},
+                {"a": 3, "b": 3, "c": 3},
+                {"a": 4, "b": 4, "c": 2},
+                {"a": 5, "b": 5, "c": 1},
+            ]
+        )
+        eval1 = Evaluation(df, eval_id=20)
+
+        pipeline = [Aggregate(lambda x: x.sum())]
+        result = eval1.process(pipeline)
+
+        expected_df = pd.DataFrame(
+            [
+                {"a": 14, "b": 15, "c": 15}
+            ]
+        )
+        assert_frame_equal(result.get_df(), expected_df)
+        assert eval1.get_eval_id() == 20
+
+        pipeline2 = [Aggregate(lambda x: x.product())]
+        result2 = eval1.process(pipeline2)
+
+        expected_df2 = pd.DataFrame(
+            [
+                {"a": 60, "b": 120, "c": 120}
+            ]
+        )
+        assert_frame_equal(result2.get_df(), expected_df2)
+        assert result2.get_eval_id() == 20
+
+    def test_geomean_aggregate(self):
+        """ Test built-in geomean aggregator """
+        df = pd.DataFrame(
+            [
+                {"a": 1, "b": 1, "c": 5},
+                {"a": 1, "b": 2, "c": 4},
+                {"a": 3, "b": 3, "c": 3},
+                {"a": 4, "b": 4, "c": 2},
+                {"a": 5, "b": 5, "c": 1},
+            ]
+        )
+        eval1 = Evaluation(df, eval_id=20)
+
+        pipeline = [GeomeanAggregate()]
+        eval1 = eval1.process(pipeline)
+
+        expected_a = (1 * 1 * 3 * 4 * 5) ** (1/5)
+        expected_b = expected_c = (1 * 2 * 3 * 4 * 5) ** (1/5)
+        expected_df = pd.DataFrame(
+            [
+                {"a": expected_a, "b": expected_b, "c": expected_c}
+            ]
+        )
+        assert_frame_equal(eval1.get_df(), expected_df)
+        assert eval1.get_eval_id() == 20
