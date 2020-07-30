@@ -456,13 +456,33 @@ class FilterByIndex(Processor):
         the name of the index to use when filtering
     index_value : Any
         the value to compare with
+    
+    Examples
+    --------
+    >>> a = Evaluation(pd.DataFrame(
+    ... data=[
+    ...     {"x": 1, "y": 5},
+    ...     {"x": 4, "y": 10}
+    ... ],
+    ... index=pd.Index(["a", "b"], name="key")))
+    >>> a.process([FilterByIndex("key", "a")]).get_df()
+	    x	y
+    key		
+    a	1	5
     """
     def __init__(self, index_name: str, index_value: Any):
         self.index_name = index_name
         self.index_value = index_value
     
     def process(self, input_eval: Evaluation):
-        new_df = input_eval.get_df().xs(self.index_value, level=self.index_name)
+        old_df = input_eval.get_df()
+        if isinstance(old_df.index, pd.MultiIndex):
+            new_df = old_df.xs(self.index_value, level=self.index_name)
+        elif isinstance(old_df.index, pd.Index):
+            # slicing instead of indexing to maintain shape
+            new_df = old_df.loc[self.index_value:self.index_value]
+        else:
+            raise ValueError("Incompatible dataframe index.")
         return Evaluation(new_df, input_eval.get_eval_id())
 
 class Aggregate(Processor):
