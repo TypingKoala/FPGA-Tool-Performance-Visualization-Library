@@ -1,6 +1,6 @@
 """ Processors transform Evaluations to be more useful when visualized. """
 import math
-from typing import Callable, Dict, List, Union
+from typing import Any, Callable, Dict, List, Union
 
 import numpy as np
 import pandas as pd
@@ -454,10 +454,10 @@ class FilterByIndex(Processor):
     ----------
     index_name : str
         the name of the index to use when filtering
-    index_value : [type]
+    index_value : Any
         the value to compare with
     """
-    def __init__(self, index_name: str, index_value: str):
+    def __init__(self, index_name: str, index_value: Any):
         self.index_name = index_name
         self.index_value = index_value
     
