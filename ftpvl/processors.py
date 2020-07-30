@@ -466,9 +466,9 @@ class FilterByIndex(Processor):
     ... ],
     ... index=pd.Index(["a", "b"], name="key")))
     >>> a.process([FilterByIndex("key", "a")]).get_df()
-	    x	y
-    key		
-    a	1	5
+        x    y
+    key
+    a   1    5
     """
     def __init__(self, index_name: str, index_value: Any):
         self.index_name = index_name
@@ -498,6 +498,17 @@ class Aggregate(Processor):
     func : Callable[[pd.Series], Union[int, float]]
         a function that takes a Pandas Series and aggregates it into a single
         number, possibly a NaN value
+
+    Examples
+    --------
+    >>> a = Evaluation(pd.DataFrame(
+    ... data=[
+    ...     {"x": 1, "y": 5},
+    ...     {"x": 4, "y": 10}
+    ... ]))
+    >>> a.process([Aggregate(lambda x: x.sum())]).get_df()
+        x    y
+    0   5    15
     """
     def __init__(self, func: Callable[[pd.Series], Union[int, float]]):
         self.func = func
@@ -514,6 +525,17 @@ class GeomeanAggregate(Aggregate):
     numeric metric.
 
     Subclass of Aggregate class.
+
+    Examples
+    --------
+    >>> a = Evaluation(pd.DataFrame(
+    ... data=[
+    ...     {"x": 1, "y": 8},
+    ...     {"x": 4, "y": 8}
+    ... ]))
+    >>> a.process([GeomeanAggregate()).get_df()
+        x    y
+    0   2    8
     """
     def __init__(self):
         def geomean(x):
