@@ -498,7 +498,7 @@ class TestProcessor:
 
         assert_frame_equal(expected, result)
 
-    def test_filterbyindex(self):
+    def test_filterbyindex_multindex(self):
         """ tests if filtering by index works for multi-index dataframe """
         # test dataframe
         # {"group": "a", "key": "a", "value": 10},
@@ -528,6 +528,29 @@ class TestProcessor:
 
         expected_index = pd.Index(["a"], name="group")
         expected_df = pd.DataFrame({"value": [10]}, index=expected_index)
+
+        assert_frame_equal(result.get_df(), expected_df)
+        assert result.get_eval_id() == 10
+
+    def test_filterbyindex_singleindex(self):
+        """ tests if filtering by index works for single-index dataframe """
+        # test dataframe
+        # {"group": "a", "key": "a", "value": 10},
+        # {"group": "a", "key": "b", "value": 5},
+        # {"group": "a", "key": "c", "value": 3},
+        # {"group": "b", "key": "d", "value": 100},
+        # {"group": "b", "key": "e", "value": 31}
+
+        idx_array = ["a", "a", "a", "b", "b"]
+        index = pd.Index(idx_array, name="key")
+        df = pd.DataFrame({"value": [10, 5, 3, 100, 31]}, index=index)
+        eval1 = Evaluation(df, eval_id=10)
+
+        # filter by first index
+        pipeline = [FilterByIndex("key", "a")]
+        result = eval1.process(pipeline)
+        expected_index = pd.Index(["a", "a", "a"], name="key")
+        expected_df = pd.DataFrame({"value": [10, 5, 3]}, index=expected_index)
 
         assert_frame_equal(result.get_df(), expected_df)
         assert result.get_eval_id() == 10
