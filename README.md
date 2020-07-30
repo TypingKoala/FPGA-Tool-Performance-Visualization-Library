@@ -13,6 +13,7 @@ Take a look at the notebooks below to demonstrate the functionality of FTPVL.
 1. [Using `HydraFetcher` and Processors](https://colab.research.google.com/drive/1BIQ-iulDFpzcve7lGJPwLePJ5ETBJ6Ut?usp=sharing)
 2. [Styling tables with `SingleTableVisualizer`](https://colab.research.google.com/drive/1u3EnmIYnTBk-LXZhqNHt_h4aMuq-_cWq?usp=sharing)
 3. [Comparing two different Evaluations](https://colab.research.google.com/drive/1I7InmA6210vIIwdQ7TGHE6aF_WwIm1dM?usp=sharing)
+4. [Filtering and Aggregating an Evaluation](https://colab.research.google.com/drive/1DDwlQFS81RGLL-q8DsgICF-HOC5ir6oS?usp=sharing)
 
 ## Documentation
 Extensive documentation, including a *Getting Started* guide, is available on
@@ -45,6 +46,9 @@ make html
 * `sphinx-rtd-theme`: for documentation generation (theme) ([website](https://github.com/readthedocs/sphinx_rtd_theme))
 
 ## Changes
+### 0.1.6
+* Added support for filter and aggregator processors, fixes [#9](https://github.com/SymbiFlow/FPGA-Tool-Performance-Visualization-Library/issues/9)
+
 ### 0.1.5
 * Added support for custom projects and jobsets in HydraFetcher.
 
