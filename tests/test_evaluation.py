@@ -6,6 +6,7 @@ import unittest
 import pandas as pd
 from ftpvl.evaluation import Evaluation
 from ftpvl.processors import MinusOne
+from pandas.testing import assert_frame_equal
 
 
 class TestEvaluation(unittest.TestCase):
@@ -15,8 +16,13 @@ class TestEvaluation(unittest.TestCase):
         get_df()
             defensive copying
         get_eval_num()
+        get_copy()
         process(List[Processor])
             0, 1, 1+ processors
+        __add__()
+            direct add
+            reverse add
+            sum
     """
 
     def test_evaluation_get_df_equality(self):
@@ -52,6 +58,23 @@ class TestEvaluation(unittest.TestCase):
 
         result = Evaluation(df, eval_id=0)
         assert result.get_eval_id() == 0
+
+    def test_evaluation_get_copy(self):
+        """
+        get_copy() should return a deep copy of Evaluation
+        """
+        df = pd.DataFrame([{"a": 1, "b": 2}, {"a": 3, "b": 4}])
+        eval1 = Evaluation(df, eval_id=1000)
+
+        result = eval1.get_copy()
+        assert result.get_eval_id() == 1000
+        assert_frame_equal(result.get_df(), df)
+
+        # change original
+        df.iloc[0]["a"] = 0
+        
+        # assert that copy has not changed
+        assert result.get_df().iloc[0]["a"] == 1
 
     def test_evaluation_process_empty(self):
         """
@@ -98,3 +121,68 @@ class TestEvaluation(unittest.TestCase):
 
         # check if output eval has correct values
         self.assertTrue(result.equals(expected))
+
+    def test_evaluation_add(self):
+        """
+        Using the + magic method should return a new Evaluation that consists
+        of the concatenated Evaluations.
+        """
+        df1 = pd.DataFrame([{"a": 1, "b": 2}, {"a": 3, "b": 4}])
+        result1 = Evaluation(df1)
+
+        df2 = pd.DataFrame([{"a": 5, "b": 6}, {"a": 7, "b": 8}])
+        result2 = Evaluation(df2)
+
+        sum_result = result1 + result2
+        expected = pd.DataFrame([
+            {"a": 1, "b": 2},
+            {"a": 3, "b": 4},
+            {"a": 5, "b": 6},
+            {"a": 7, "b": 8}
+        ])
+
+        assert_frame_equal(sum_result.get_df(), expected)
+        assert sum_result.get_eval_id() is None
+
+    def test_evaluation_add_different_columns(self):
+        """
+        Using the + magic method should return a new Evaluation that consists
+        of the concatenated Evaluations, even if columns don't match
+        """
+        df1 = pd.DataFrame([{"a": 1, "b": 2}, {"a": 3, "b": 4}])
+        result1 = Evaluation(df1)
+
+        df2 = pd.DataFrame([{"a": 5}, {"a": 7}])
+        result2 = Evaluation(df2)
+
+        sum_result = result1 + result2
+        expected = pd.DataFrame([
+            {"a": 1, "b": 2},
+            {"a": 3, "b": 4},
+            {"a": 5},
+            {"a": 7}
+        ])
+
+        assert_frame_equal(sum_result.get_df(), expected)
+        assert sum_result.get_eval_id() is None
+
+    def test_evaluation_add_multiple(self):
+        """
+        Using the sum() built-in function should return a new Evaluation
+        that consists of concatenated Evaluations
+        """
+        eval1 = Evaluation(pd.DataFrame([{"a": 1, "b": 2}]))
+        eval2 = Evaluation(pd.DataFrame([{"a": 3, "b": 4}]))
+        eval3 = Evaluation(pd.DataFrame([{"a": 5, "b": 6}]))
+        eval4 = Evaluation(pd.DataFrame([{"a": 7, "b": 8}]))
+
+        sum_result = sum([eval1, eval2, eval3, eval4])
+        expected = pd.DataFrame([
+            {"a": 1, "b": 2},
+            {"a": 3, "b": 4},
+            {"a": 5, "b": 6},
+            {"a": 7, "b": 8}
+        ])
+
+        assert_frame_equal(sum_result.get_df(), expected)
+        assert sum_result.get_eval_id() is None
