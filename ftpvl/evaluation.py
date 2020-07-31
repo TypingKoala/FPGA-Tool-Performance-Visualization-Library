@@ -34,6 +34,12 @@ class Evaluation():
         Returns the ID number of the evaluation if specified, otherwise None
         """
         return self._eval_id
+    
+    def get_copy(self) -> 'Evaluation':
+        """
+        Returns a deep copy of the Evaluation instance
+        """
+        return Evaluation(self.get_df(), self.get_eval_id())
 
     def process(self, pipeline: List['Processor']) -> 'Evaluation':
         """
@@ -47,3 +53,37 @@ class Evaluation():
             an Evaluation instance that was processed by the pipeline
         """
         return reduce(lambda r, p: p.process(r), pipeline, self)
+
+    def __add__(self, other: 'Evaluation') -> 'Evaluation':
+        """
+        Magic method for concatenating two Evaluations, returning an Evaluation
+        with dataframe (self + other).
+
+        Args
+        ------
+            other: the other Evaluation to concatenate
+        
+        Returns:
+            a new Evaluation that consists of the two Evaluations concatenated
+        """
+        if not isinstance(other, Evaluation):
+            raise TypeError(f"can only concatenate Evaluation (not {type(other).__name__}) to Evaluation")
+        new_df = pd.concat([self.get_df(), other.get_df()], ignore_index=True)
+        return Evaluation(new_df)
+
+    def __radd__(self, other: 'Evaluation') -> 'Evaluation':
+        """
+        Magic method for reverse concatenating two Evaluations, returning an
+        Evaluation with dataframe (other + self).
+
+        Args
+        ------
+            other: the other Evaluation to concatenate
+        
+        Returns:
+            a new Evaluation that consists of the two Evaluations concatenated
+        """
+        # handle default start value of sum() is `0`
+        if other == 0:
+            return self.get_copy()
+        return self.__add__(other)
