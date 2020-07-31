@@ -590,6 +590,30 @@ class TestProcessor:
         assert_frame_equal(result2.get_df(), expected_df2)
         assert result2.get_eval_id() == 20
 
+    def test_aggregate_exclude_nonnumeric(self):
+        """ Check if aggregate processor excludes fields that are non-numeric """
+        df = pd.DataFrame(
+            [
+                {"a": 1, "b": 1, "c": "a"},
+                {"a": 1, "b": 2, "c": "b"},
+                {"a": 3, "b": 3, "c": "c"},
+                {"a": 4, "b": 4, "c": "d"},
+                {"a": 5, "b": 5, "c": "e"},
+            ]
+        )
+        eval1 = Evaluation(df, eval_id=20)
+
+        pipeline = [Aggregate(lambda x: x.sum())]
+        result = eval1.process(pipeline)
+
+        expected_df = pd.DataFrame(
+            [
+                {"a": 14, "b": 15}
+            ]
+        )
+        assert_frame_equal(result.get_df(), expected_df)
+        assert eval1.get_eval_id() == 20
+
     def test_geomean_aggregate(self):
         """ Test built-in geomean aggregator """
         df = pd.DataFrame(
