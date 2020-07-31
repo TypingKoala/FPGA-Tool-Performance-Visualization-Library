@@ -67,6 +67,15 @@ Processors API
 .. autoclass:: ftpvl.processors.RelativeDiff
     :members:
 
+.. autoclass:: ftpvl.processors.FilterByIndex
+    :members:
+
+.. autoclass:: ftpvl.processors.Aggregate
+    :members:
+
+.. autoclass:: ftpvl.processors.GeomeanAggregate
+    :members:
+
 .. _topics-api-styles:
 
 Styles API

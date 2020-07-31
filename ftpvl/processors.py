@@ -1,9 +1,11 @@
 """ Processors transform Evaluations to be more useful when visualized. """
+import math
+from typing import Any, Callable, Dict, List, Union
 
-from typing import List, Dict
-import pandas as pd
 import numpy as np
+import pandas as pd
 from ftpvl.evaluation import Evaluation
+from scipy import stats
 
 
 class Processor:
@@ -438,3 +440,106 @@ class RelativeDiff(Processor):
         difference_eval = Evaluation(diff)
 
         return difference_eval
+
+class FilterByIndex(Processor):
+    """
+    Processor that filters an Evaluation by matching a specified index value
+    after indexing.
+
+    This is best used in a processing pipeline after the Reindex processor.
+    For filtering an evaluation based on metrics (which is not an index),
+    use the FilterByMetric processor.
+
+    Parameters
+    ----------
+    index_name : str
+        the name of the index to use when filtering
+    index_value : Any
+        the value to compare with
+    
+    Examples
+    --------
+    >>> a = Evaluation(pd.DataFrame(
+    ... data=[
+    ...     {"x": 1, "y": 5},
+    ...     {"x": 4, "y": 10}
+    ... ],
+    ... index=pd.Index(["a", "b"], name="key")))
+    >>> a.process([FilterByIndex("key", "a")]).get_df()
+        x    y
+    key
+    a   1    5
+    """
+    def __init__(self, index_name: str, index_value: Any):
+        self.index_name = index_name
+        self.index_value = index_value
+    
+    def process(self, input_eval: Evaluation):
+        old_df = input_eval.get_df()
+        if isinstance(old_df.index, pd.MultiIndex):
+            new_df = old_df.xs(self.index_value, level=self.index_name)
+        elif isinstance(old_df.index, pd.Index):
+            # slicing instead of indexing to maintain shape
+            new_df = old_df.loc[self.index_value:self.index_value]
+        else:
+            raise ValueError("Incompatible dataframe index.")
+        return Evaluation(new_df, input_eval.get_eval_id())
+
+class Aggregate(Processor):
+    """
+    Processor that allows you to aggregate all the numeric fields of an
+    Evaluation using a specified function.
+
+    This acts as a superclass for specific aggregator implementations, such as
+    GeomeanAggregate. It can also be used for custom aggregations, by supplying
+    an aggregator function to the constructor.
+
+    Parameters
+    ----------
+    func : Callable[[pd.Series], Union[int, float]]
+        a function that takes a Pandas Series and aggregates it into a single
+        number, possibly a NaN value
+
+    Examples
+    --------
+    >>> a = Evaluation(pd.DataFrame(
+    ... data=[
+    ...     {"x": 1, "y": 5},
+    ...     {"x": 4, "y": 10}
+    ... ]))
+    >>> a.process([Aggregate(lambda x: x.sum())]).get_df()
+        x    y
+    0   5    15
+    """
+    def __init__(self, func: Callable[[pd.Series], Union[int, float]]):
+        self.func = func
+    
+    def process(self, input_eval: Evaluation):
+        old_df = input_eval.get_df()
+        numeric_columns = old_df.select_dtypes(include=['number']).dropna(axis=1).columns
+        new_df = pd.DataFrame([old_df[numeric_columns].agg(self.func)])
+        return Evaluation(new_df, input_eval.get_eval_id())
+
+class GeomeanAggregate(Aggregate):
+    """
+    Processor that aggregates an entire Evaluation by finding the geometric mean of each
+    numeric metric.
+
+    Subclass of Aggregate class.
+
+    Examples
+    --------
+    >>> a = Evaluation(pd.DataFrame(
+    ... data=[
+    ...     {"x": 1, "y": 8},
+    ...     {"x": 4, "y": 8}
+    ... ]))
+    >>> a.process([GeomeanAggregate()).get_df()
+        x    y
+    0   2    8
+    """
+    def __init__(self):
+        def geomean(x):
+            x = x.dropna()
+            return stats.gmean(x) if not x.empty else math.nan
+        super().__init__(geomean)
