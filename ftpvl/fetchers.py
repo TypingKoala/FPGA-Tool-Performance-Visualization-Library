@@ -114,9 +114,10 @@ class HydraFetcher(Fetcher):
             raise IndexError(f"Invalid eval_num: {self.eval_num}")
         build_nums = evals_json["evals"][self.eval_num]["builds"]
 
-        # collect the 'meta.json' build products
+        # fetch build info and download 'meta.json'
         data = []
         for build_num in build_nums:
+            # get build info
             resp = requests.get(
                 f"https://hydra.vtr.tools/build/{build_num}",
                 headers={"Content-Type": "application/json"},
