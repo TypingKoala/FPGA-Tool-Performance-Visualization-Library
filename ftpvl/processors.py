@@ -443,7 +443,7 @@ class RelativeDiff(Processor):
 
 class FilterByIndex(Processor):
     """
-    Processor that filters an Evaluation by comparing a specified value
+    Processor that filters an Evaluation by matching a specified index value
     after indexing.
 
     This is best used in a processing pipeline after the Reindex processor.
@@ -487,11 +487,12 @@ class FilterByIndex(Processor):
 
 class Aggregate(Processor):
     """
-    Processor that allows you to aggregate an entire Evaluation using a specified
-    function.
+    Processor that allows you to aggregate all the numeric fields of an
+    Evaluation using a specified function.
 
-    This is useful for custom aggregators and as a superclass for specific
-    aggregator implementations, such as GeomeanAggregate.
+    This acts as a superclass for specific aggregator implementations, such as
+    GeomeanAggregate. It can also be used for custom aggregations, by supplying
+    an aggregator function to the constructor.
 
     Parameters
     ----------
