@@ -65,6 +65,8 @@ class TestHydraFetcherLarge(unittest.TestCase):
             evals_fn = 'tests/sample_data/evals.large.json'
             evals_url = 'https://hydra.vtr.tools/jobset/dusty/fpga-tool-perf/evals'
 
+            build_fn = 'tests/sample_data/build.large.json'
+
             meta_fn = 'tests/sample_data/meta.large.json'
 
             # setup /evals request mock
@@ -73,13 +75,21 @@ class TestHydraFetcherLarge(unittest.TestCase):
                 evals_json_encoded = f.read()
                 evals_json_decoded = json.loads(evals_json_encoded)
                 m.get(evals_url, text=evals_json_encoded)
+            
+            # read sample build response
+            build_json_encoded = None
+            with open(build_fn, "r") as f:
+                build_json_encoded = f.read()
 
-            # setup /meta.json request mock
+            # setup /build and /meta.json request mock
             with open(meta_fn, "r") as f:
                 meta_json_encoded = f.read()
                 for eval_obj in evals_json_decoded["evals"]:
                     for build_num in eval_obj["builds"]:
-                        url = f'https://hydra.vtr.tools/build/{build_num}/download/1/meta.json'
+                        # setup /build
+                        m.get(f'https://hydra.vtr.tools/build/{build_num}', text=build_json_encoded)
+                        # setup meta.json
+                        url = f'https://hydra.vtr.tools/build/{build_num}/download/5/meta.json'
                         m.get(url, text=meta_json_encoded)
 
             # run tests on different eval_num
@@ -96,8 +106,6 @@ class TestHydraFetcherLarge(unittest.TestCase):
 
                     expected_num_rows = len(evals_json_decoded['evals'][eval_num]['builds'])
                     self.assertEqual(len(result.index), expected_num_rows)
-
-                    # TODO: more tests on real data
 
 
 class TestJSONFetcherLarge(unittest.TestCase):

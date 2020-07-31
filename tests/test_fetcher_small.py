@@ -49,15 +49,26 @@ class TestHydraFetcherSmall(unittest.TestCase):
             evals_fn = 'tests/sample_data/evals.small.json'
             evals_url = 'https://hydra.vtr.tools/jobset/dusty/fpga-tool-perf/evals'
 
-            # load sample json data
+            build_fn = 'tests/sample_data/build.small.json'
+
+            # setup /evals request mock
             with open(evals_fn, "r") as f:
                 json_data = f.read()
-                m.get(evals_url, text=json_data) # setup /evals request mock
+                m.get(evals_url, text=json_data) 
+
+            # setup /build and /meta.json request mock
+            with open(build_fn, "r") as f:
+                json_data = f.read()
 
                 for build_num in range(12):
-                    url = f'https://hydra.vtr.tools/build/{build_num}/download/1/meta.json'
+                    # /build/:buildid
+                    build_url = f'https://hydra.vtr.tools/build/{build_num}'
+                    m.get(build_url, text=json_data)
+                    
+                    # /meta.json
+                    meta_url = f'https://hydra.vtr.tools/build/{build_num}/download/5/meta.json'
                     payload = {"build_num": build_num}
-                    m.get(url, json=payload) # setup /meta.json request mock
+                    m.get(meta_url, json=payload) # setup /meta.json request mock
 
             # run tests on different eval_num
             for eval_num in range(0, 3):
@@ -87,15 +98,26 @@ class TestHydraFetcherSmall(unittest.TestCase):
             evals_fn = 'tests/sample_data/evals.small.json'
             evals_url = 'https://hydra.vtr.tools/jobset/dusty/fpga-tool-perf/evals'
 
-            # load sample json data
+            build_fn = 'tests/sample_data/build.small.json'
+
+            # setup /evals request mock
             with open(evals_fn, "r") as f:
                 json_data = f.read()
-                m.get(evals_url, text=json_data) # setup /evals request mock
+                m.get(evals_url, text=json_data) 
 
-                for build_num in range(4):
-                    url = f'https://hydra.vtr.tools/build/{build_num}/download/1/meta.json'
-                    payload = {"build_num": build_num, "extra": 1}
-                    m.get(url, json=payload) # setup /meta.json request mock
+            # setup /build and /meta.json request mock
+            with open(build_fn, "r") as f:
+                json_data = f.read()
+
+                for build_num in range(12):
+                    # /build/:buildid
+                    build_url = f'https://hydra.vtr.tools/build/{build_num}'
+                    m.get(build_url, text=json_data)
+                    
+                    # /meta.json
+                    meta_url = f'https://hydra.vtr.tools/build/{build_num}/download/5/meta.json'
+                    payload = {"build_num": build_num}
+                    m.get(meta_url, json=payload) # setup /meta.json request mock
 
             # test exclusion
             hf1 = HydraFetcher(
@@ -135,13 +157,24 @@ class TestHydraFetcherSmall(unittest.TestCase):
             evals_fn = 'tests/sample_data/evals.small.json'
             evals_url = 'https://hydra.vtr.tools/jobset/dusty/fpga-tool-perf/evals'
 
-            # load sample json data
+            build_fn = 'tests/sample_data/build.small.json'
+
+            # setup /evals request mock
             with open(evals_fn, "r") as f:
                 json_data = f.read()
-                m.get(evals_url, text=json_data) # setup /evals request mock
+                m.get(evals_url, text=json_data)
+
+            # setup /build and /meta.json request mock
+            with open(build_fn, "r") as f:
+                json_data = f.read()
 
                 for build_num in range(4):
-                    url = f'https://hydra.vtr.tools/build/{build_num}/download/1/meta.json'
+                    # /build/:buildid0
+                    build_url = f'https://hydra.vtr.tools/build/{build_num}'
+                    m.get(build_url, text=json_data)
+
+                    # /meta.json
+                    url = f'https://hydra.vtr.tools/build/{build_num}/download/5/meta.json'
                     payload = {
                         "max_freq": {
                             "clk": {
