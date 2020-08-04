@@ -1,0 +1,877 @@
+{
+    "project": "dusty",
+    "buildmetrics": {},
+    "job": "baselitex_vivado-yosys_arty",
+    "buildoutputs": {
+        "out": {
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty"
+        }
+    },
+    "jobset": "fpga-tool-perf",
+    "nixname": "fpga-tool-perf-baselitex-vivado-yosys-arty",
+    "system": "x86_64-linux",
+    "starttime": 1593129909,
+    "jobsetevals": [
+        854
+    ],
+    "priority": 100,
+    "drvpath": "/nix/store/s0badfaz2kccsyilsgrmjqhwbndxai3h-fpga-tool-perf-baselitex-vivado-yosys-arty.drv",
+    "timestamp": 1593129909,
+    "finished": 1,
+    "releasename": null,
+    "buildstatus": 0,
+    "buildproducts": {
+        "4": {
+            "sha256hash": "611fd64c8dcf9f531f6e3ca40085c6e5ece8c3e8e10ca275a8178f245383fb6c",
+            "sha1hash": "4d9b07cc8aa183c8f1c209e2755459ef0d67b056",
+            "type": "file",
+            "defaultpath": "",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.xpr",
+            "subtype": "data",
+            "filesize": 5753,
+            "name": "litex-linux.xpr"
+        },
+        "22": {
+            "defaultpath": "",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux_pgm.tcl",
+            "subtype": "data",
+            "sha1hash": "079393545687002cb94afa5987a9c38a03f3baf5",
+            "sha256hash": "d8df2f0e60cff4c2477ecc52522c7d79589799414772aae8b39a8f986b86d87b",
+            "type": "file",
+            "name": "litex-linux_pgm.tcl",
+            "filesize": 3101
+        },
+        "75": {
+            "defaultpath": "",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/litex-linux_route_status.rpt",
+            "subtype": "data",
+            "sha1hash": "2227f5e561493e61d5acfcae92337b2a04bf09e6",
+            "sha256hash": "c649a158d5349e30415bae01f5cc7ac1e804c21237c7ce399ba568ef91ff73ea",
+            "type": "file",
+            "name": "litex-linux_route_status.rpt",
+            "filesize": 651
+        },
+        "24": {
+            "defaultpath": "",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.blif",
+            "subtype": "data",
+            "sha1hash": "cb553e40fe93026693b2879f7a9fa51226f550c0",
+            "sha256hash": "8f5297666f451a815da053f6e5d49131834096fbbbc8f2b9fa3cff20bac0fb1d",
+            "type": "file",
+            "name": "litex-linux.blif",
+            "filesize": 6151493
+        },
+        "43": {
+            "sha256hash": "8425442b7c369e88faeab6bf76bfcad88af955afd010b2ca22277bc6468c93aa",
+            "sha1hash": "b5214cfaa67e632a26065c99acf2e4925952ec88",
+            "type": "file",
+            "defaultpath": "",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/vivado.jou",
+            "filesize": 891,
+            "name": "vivado.jou"
+        },
+        "80": {
+            "name": "litex-linux_methodology_drc_routed.rpt",
+            "filesize": 98389,
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/litex-linux_methodology_drc_routed.rpt",
+            "defaultpath": "",
+            "type": "file",
+            "sha1hash": "488cefcec4a3cac9fe5e7a921a09af3657c23e25",
+            "sha256hash": "b0b280ef67763fec20cfe6ce7799233c5a04894866d3ee265161e47c7db73c6e"
+        },
+        "39": {
+            "name": "litex-linux_utilization_placed.pb",
+            "filesize": 242,
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/litex-linux_utilization_placed.pb",
+            "defaultpath": "",
+            "type": "file",
+            "sha1hash": "5ab62d0ad0e2c82388b82ab5166c821cee33d384",
+            "sha256hash": "6a9e6e1df5bd47d3261604ca0775ecbd5cfeb85d59f44ff20aea9bb60b7e8384"
+        },
+        "38": {
+            "filesize": 459,
+            "name": "vivado.pb",
+            "type": "file",
+            "sha256hash": "07b612e52d6d3b3d8ebb61b6c5f189902c90b7fb9f24e16862bd4412845c6dd1",
+            "sha1hash": "94b9bdeb1e3479fe004a0a7f747c60326a10a122",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/vivado.pb",
+            "defaultpath": ""
+        },
+        "85": {
+            "name": "top_timing_summary_routed.rpt",
+            "filesize": 124178,
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/top_timing_summary_routed.rpt",
+            "defaultpath": "",
+            "type": "file",
+            "sha1hash": "f2011be6a10e344b3a2da96ee24ac3783ab5057a",
+            "sha256hash": "990080f205864077c7ff9a1758a1788033b7cc824772c19b4f48aae47417be87"
+        },
+        "6": {
+            "filesize": 800,
+            "name": "vivado.jou",
+            "type": "file",
+            "sha256hash": "186bbbe5855bc0d78c5bb48effc3d2900680530e79074aea81d2265af0d1a462",
+            "sha1hash": "92cd6c1551024c3f09ea30775ee5e21bb998c5f9",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/vivado.jou",
+            "subtype": "data",
+            "defaultpath": ""
+        },
+        "21": {
+            "sha256hash": "a6ba24502e097cbb1188ce0489b604661f1843d5778ca3cd889554fc671e8e3a",
+            "sha1hash": "0712deeded6545d2a51b23bfa3bca10b7f4e7d9e",
+            "type": "file",
+            "defaultpath": "",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.mk",
+            "subtype": "data",
+            "filesize": 270,
+            "name": "litex-linux.mk"
+        },
+        "5": {
+            "sha256hash": "93e161b2d8641c926b304f6c7d55c4a20d18a1e449ccb6aa81f5619f239e051b",
+            "sha1hash": "dc0313c9ea558763f3e7ac6d8870d09afb0b287d",
+            "type": "file",
+            "defaultpath": "",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/meta.json",
+            "subtype": "data",
+            "filesize": 2168,
+            "name": "meta.json"
+        },
+        "1": {
+            "type": "file",
+            "sha256hash": "964a6dbe4039cc53715389d7cf3bada14b8fdef33d6f0859ea490797f513fa88",
+            "sha1hash": "b4b7575ed0478b35429b2d76a89bd6ecf42337cc",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/mem.init",
+            "defaultpath": "",
+            "filesize": 48793,
+            "name": "mem.init"
+        },
+        "70": {
+            "filesize": 161,
+            "name": ".write_bitstream.begin.rst",
+            "sha256hash": "5ad965291e7e9e8ce5cdbf92968ed1a9f319b4261a553762c8ffe2568b65c22e",
+            "sha1hash": "22563e4e91da5229e824a8a3315dd0a2c13f229e",
+            "type": "file",
+            "defaultpath": "",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/.write_bitstream.begin.rst",
+            "subtype": "data"
+        },
+        "53": {
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/rundef.js",
+            "subtype": "data",
+            "defaultpath": "",
+            "type": "file",
+            "sha1hash": "776c3f78e0c797f69b7e78ce7624972b69ab0c42",
+            "sha256hash": "99228ea4d0794bb180154c018649938914eee238f8250488ad815f92af5586ce",
+            "name": "rundef.js",
+            "filesize": 1930
+        },
+        "13": {
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.bit",
+            "subtype": "data",
+            "defaultpath": "",
+            "type": "file",
+            "sha1hash": "de30572592328cea82d46c73bc38c3593709425b",
+            "sha256hash": "db2c88480a248c93aaade3032cb9a2c3eb1404aa5b395971beb2f0fc6245e82e",
+            "name": "litex-linux.bit",
+            "filesize": 2192111
+        },
+        "76": {
+            "type": "file",
+            "sha256hash": "cefbb22d84bfef12a1396bf17d13a3aa7b04e7a9a5981cd517c98ca2b14f20aa",
+            "sha1hash": "3e6884d60295fa5e72ed8540beb62c3ea5f76e24",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/runme.log",
+            "defaultpath": "",
+            "filesize": 73529,
+            "name": "runme.log"
+        },
+        "37": {
+            "filesize": 85171,
+            "name": "litex-linux_io_placed.rpt",
+            "sha256hash": "da3e20841a52a713050d9a59491528983b146671ec5b650d0b21e3d74418683b",
+            "sha1hash": "57dfe8cdd38a89f2ee139720382e68be6c77accf",
+            "type": "file",
+            "defaultpath": "",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/litex-linux_io_placed.rpt"
+        },
+        "63": {
+            "filesize": 9555,
+            "name": "opt_design.pb",
+            "type": "file",
+            "sha256hash": "770c7b6325a0fc41898f1e280339064ac1341f5d2ec8b881c05f4e0cad1ec6a6",
+            "sha1hash": "b580f1c5727d07180f4827c888ccc15075716e5c",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/opt_design.pb",
+            "defaultpath": ""
+        },
+        "69": {
+            "filesize": 0,
+            "name": ".vivado.end.rst",
+            "type": "file",
+            "sha256hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "sha1hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/.vivado.end.rst",
+            "defaultpath": ""
+        },
+        "84": {
+            "filesize": 286,
+            "name": "vrs_config_1.xml",
+            "type": "file",
+            "sha256hash": "944439ddde7ecf0a76166a4e6d16e8c1d197b6aeeedff014937253590ef82344",
+            "sha1hash": "aabc658972bc43296a9b20ea8f7801d6fe99730d",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/.jobs/vrs_config_1.xml",
+            "defaultpath": ""
+        },
+        "47": {
+            "filesize": 4650,
+            "name": "litex-linux.tcl",
+            "sha256hash": "de5080e7895cbde2af1db49b714fa1a0f836a4e1244a169c9e19024eb9e416e9",
+            "sha1hash": "870c1285b481d7f200f0e04f36d7646acf0e977d",
+            "type": "file",
+            "defaultpath": "",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/litex-linux.tcl"
+        },
+        "19": {
+            "filesize": 20,
+            "name": "mem_2.init",
+            "type": "file",
+            "sha256hash": "58de9c82fde1bce8307f928b168df628f78affe91d9f033322e070ae71c29125",
+            "sha1hash": "d5e8768b5a008fe37a49749998b2d621d60f6012",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/mem_2.init",
+            "defaultpath": ""
+        },
+        "9": {
+            "filesize": 1001,
+            "name": "webtalk_pa.xml",
+            "type": "file",
+            "sha256hash": "ff5542cf5e269eb473146e763351cbc22d0460681e8d116480a2843fce7fc964",
+            "sha1hash": "dc4ba651ae1856eb1122bf90b378cb8e335b1bd5",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.cache/wt/webtalk_pa.xml",
+            "defaultpath": ""
+        },
+        "82": {
+            "filesize": 0,
+            "name": ".Vivado_Implementation.queue.rst",
+            "type": "file",
+            "sha256hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "sha1hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/.Vivado_Implementation.queue.rst",
+            "defaultpath": ""
+        },
+        "71": {
+            "filesize": 0,
+            "name": ".write_bitstream.end.rst",
+            "type": "file",
+            "sha256hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "sha1hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/.write_bitstream.end.rst",
+            "subtype": "data",
+            "defaultpath": ""
+        },
+        "59": {
+            "sha256hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "sha1hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+            "type": "file",
+            "defaultpath": "",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/.opt_design.end.rst",
+            "filesize": 0,
+            "name": ".opt_design.end.rst"
+        },
+        "20": {
+            "filesize": 0,
+            "name": "mem_1.init",
+            "sha256hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "sha1hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+            "type": "file",
+            "defaultpath": "",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/mem_1.init",
+            "subtype": "data"
+        },
+        "48": {
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/litex-linux.bit",
+            "defaultpath": "",
+            "type": "file",
+            "sha1hash": "de30572592328cea82d46c73bc38c3593709425b",
+            "sha256hash": "db2c88480a248c93aaade3032cb9a2c3eb1404aa5b395971beb2f0fc6245e82e",
+            "name": "litex-linux.bit",
+            "filesize": 2192111
+        },
+        "26": {
+            "filesize": 9632593,
+            "name": "litex-linux.edif",
+            "sha256hash": "d2cc1eb38efc0cab731120c9862fd137b1af1b8f6d0a67e3ce9b8ce7d899f130",
+            "sha1hash": "bb2f5ebe02d51cba6baddd0557d2a9575e910ef5",
+            "type": "file",
+            "defaultpath": "",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.edif",
+            "subtype": "data"
+        },
+        "72": {
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/htr.txt",
+            "subtype": "data",
+            "defaultpath": "",
+            "type": "file",
+            "sha1hash": "20c99f2e52d96c28a53b55ce549d9cea1a502bba",
+            "sha256hash": "c2810760aa3641056f009af3d3e93a76c0c2420b35f9e789ae565e62186d75cf",
+            "name": "htr.txt",
+            "filesize": 384
+        },
+        "33": {
+            "sha256hash": "651296bffa7de8e2c6bd88056ceb585972b81eeef94da3571126d8e7914f437c",
+            "sha1hash": "3e911f486118250de63cb8ce16dfb12de54df052",
+            "type": "file",
+            "defaultpath": "",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/litex-linux_drc_opted.rpt",
+            "filesize": 23765,
+            "name": "litex-linux_drc_opted.rpt"
+        },
+        "67": {
+            "filesize": 3583,
+            "name": "project.wdf",
+            "sha256hash": "86cafc952b8bf95026dc7ba71e57008588b48c4b98d2e1c091e6a2f6d61dcb46",
+            "sha1hash": "1421b68b1aa89951728312cbac6c5c2a99c7364b",
+            "type": "file",
+            "defaultpath": "",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/project.wdf"
+        },
+        "49": {
+            "filesize": 161,
+            "name": ".opt_design.begin.rst",
+            "type": "file",
+            "sha256hash": "5ad965291e7e9e8ce5cdbf92968ed1a9f319b4261a553762c8ffe2568b65c22e",
+            "sha1hash": "22563e4e91da5229e824a8a3315dd0a2c13f229e",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/.opt_design.begin.rst",
+            "subtype": "data",
+            "defaultpath": ""
+        },
+        "81": {
+            "defaultpath": "",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/litex-linux_drc_routed.rpt",
+            "sha1hash": "019d901cf2fd6eea433164d207b58be70f62f306",
+            "sha256hash": "c41b76e7a6941192aeadc62198273102003a37d79eb616c17fe0aebfd549ae22",
+            "type": "file",
+            "name": "litex-linux_drc_routed.rpt",
+            "filesize": 23901
+        },
+        "17": {
+            "name": "top_utilization_placed.rpt",
+            "filesize": 8234,
+            "defaultpath": "",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/top_utilization_placed.rpt",
+            "subtype": "data",
+            "sha1hash": "2f9983fa5b53df6f60b5bdf0a79de4df98b6a0c2",
+            "sha256hash": "e5d74ae9452428dc7dcb476054f5a75479dc988784cc30204ff4fc7e96a7701e",
+            "type": "file"
+        },
+        "25": {
+            "defaultpath": "",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/vivado.log",
+            "subtype": "data",
+            "sha1hash": "1773c15c0868340642ff988537b17dd6992e0309",
+            "sha256hash": "df269531623620ca48205eaeb77d3817c2568aa733e84605e9115c075d702f9a",
+            "type": "file",
+            "name": "vivado.log",
+            "filesize": 93697
+        },
+        "57": {
+            "type": "file",
+            "sha256hash": "7df34f03eb4f9557da97b1f8cc77079cc9fd42ebcd918fc039d7bc77b1dcf955",
+            "sha1hash": "b768f18eb08db449270b10f94a4a3d6ce5f24a59",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/runme.sh",
+            "subtype": "data",
+            "defaultpath": "",
+            "filesize": 1576,
+            "name": "runme.sh"
+        },
+        "74": {
+            "defaultpath": "",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/litex-linux_opt.dcp",
+            "sha1hash": "69977ddbb97ec30384ce69dec6fd04f97041e3ac",
+            "sha256hash": "51b4837ab83bebad29b017799b829e3d7cd1faa6d752bb1f2fd4f5aefe66a5e9",
+            "type": "file",
+            "name": "litex-linux_opt.dcp",
+            "filesize": 1825371
+        },
+        "58": {
+            "name": "litex-linux_timing_summary_routed.rpx",
+            "filesize": 605181,
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/litex-linux_timing_summary_routed.rpx",
+            "subtype": "data",
+            "defaultpath": "",
+            "type": "file",
+            "sha1hash": "c93c1a38b0fee90bcb8fdef0dff4f192bc1a6164",
+            "sha256hash": "c1dad9f5c8ba1539cc856d079d3977d913055e328dda3f1a404570b27da13c3a"
+        },
+        "18": {
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.json",
+            "subtype": "data",
+            "defaultpath": "",
+            "type": "file",
+            "sha1hash": "9227a0f4ab995d860b92ae15066ec1c7be81fb9e",
+            "sha256hash": "b367af7aff53c075d18aa441f94d02a1b291370422331b488b119e368589a741",
+            "name": "litex-linux.json",
+            "filesize": 26549067
+        },
+        "3": {
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/vivado_51.backup.log",
+            "subtype": "data",
+            "defaultpath": "",
+            "type": "file",
+            "sha1hash": "869dcee8e9e14ace420126c86a72212a5deff801",
+            "sha256hash": "29a2f4048ed3cc2656619cfec323d5eac128a919b50326d10cde1e1e73dbffe4",
+            "name": "vivado_51.backup.log",
+            "filesize": 1096
+        },
+        "68": {
+            "defaultpath": "",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/place_design.pb",
+            "sha1hash": "e04c04f7ea27322c93debdfd530fd496e628f6f9",
+            "sha256hash": "afd907c07a289e34c9139d2a4a19c688a28873aa0d62f0c29582225fdea3f32f",
+            "type": "file",
+            "name": "place_design.pb",
+            "filesize": 48941
+        },
+        "45": {
+            "name": "litex-linux.dcp",
+            "filesize": 1937308,
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/litex-linux.dcp",
+            "subtype": "data",
+            "defaultpath": "",
+            "type": "file",
+            "sha1hash": "71c73b67e6d478c898406c282c17e39b9708875b",
+            "sha256hash": "2038d1f0c4148cc97c713c2d4b299adad2d287fc9ac8f6309b0219afaf3b04fa"
+        },
+        "29": {
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/.route_design.begin.rst",
+            "subtype": "data",
+            "defaultpath": "",
+            "type": "file",
+            "sha1hash": "22563e4e91da5229e824a8a3315dd0a2c13f229e",
+            "sha256hash": "5ad965291e7e9e8ce5cdbf92968ed1a9f319b4261a553762c8ffe2568b65c22e",
+            "name": ".route_design.begin.rst",
+            "filesize": 161
+        },
+        "7": {
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/yosys.tcl",
+            "subtype": "data",
+            "defaultpath": "",
+            "type": "file",
+            "sha1hash": "0d4a184f1a9b4c3fee3532761d18de8143723f1f",
+            "sha256hash": "1f18a7155f8b9832828504d2e282e435dddc6347f2c0b1a97ebf8fbfb0abefdf",
+            "name": "yosys.tcl",
+            "filesize": 796
+        },
+        "73": {
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/ISEWrap.js",
+            "subtype": "data",
+            "defaultpath": "",
+            "type": "file",
+            "sha1hash": "b9bb12cf1bd5cfb91e1ce6115c9f05a6d6b2fa4c",
+            "sha256hash": "e3a4ba121d566c77db9037e96bc1cdc28e660bf92b1c07dc54a46715fd2fc260",
+            "name": "ISEWrap.js",
+            "filesize": 7308
+        },
+        "50": {
+            "sha256hash": "393994fef3207765f5fdbb498f1a437e4384ab4bc1b459e93f4469f1da961233",
+            "sha1hash": "60f9dbaa5816e5948dcc5e3ce71026a0c4c49add",
+            "type": "file",
+            "defaultpath": "",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/write_bitstream.pb",
+            "filesize": 36658,
+            "name": "write_bitstream.pb"
+        },
+        "32": {
+            "name": "usage_statistics_webtalk.html",
+            "filesize": 28900,
+            "defaultpath": "",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/usage_statistics_webtalk.html",
+            "sha1hash": "21624523efc30977c4f40c04edf1e45bb4b7c969",
+            "sha256hash": "8a9df95b7ec5494030bca0a2f03224d0f486f3f8d5aeb132a95b744558fb4542",
+            "type": "file"
+        },
+        "10": {
+            "name": "litex-linux_run.tcl",
+            "filesize": 824,
+            "defaultpath": "",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux_run.tcl",
+            "subtype": "data",
+            "sha1hash": "ffa070bd7e37a2e0d5d71e336ffa34bad672aa2c",
+            "sha256hash": "9b0fa3a5fb73437c2c39f53ba8be831799d6a2967f75d6cba048a3f736557412",
+            "type": "file"
+        },
+        "66": {
+            "defaultpath": "",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/litex-linux_drc_routed.pb",
+            "sha1hash": "da94b022a430614d6464ddab8abf4cc6cd2e01b4",
+            "sha256hash": "17c43db0fbd27d9040ee1ae60dd963bc3fa8f1adbc02deb9af63a91ce217bbbb",
+            "type": "file",
+            "name": "litex-linux_drc_routed.pb",
+            "filesize": 37
+        },
+        "56": {
+            "name": ".init_design.begin.rst",
+            "filesize": 161,
+            "defaultpath": "",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/.init_design.begin.rst",
+            "subtype": "data",
+            "sha1hash": "22563e4e91da5229e824a8a3315dd0a2c13f229e",
+            "sha256hash": "5ad965291e7e9e8ce5cdbf92968ed1a9f319b4261a553762c8ffe2568b65c22e",
+            "type": "file"
+        },
+        "16": {
+            "sha256hash": "61dec913b55e90b73087e2f7a232ac3a0c49c8d59d7a260d4d551da711f52479",
+            "sha1hash": "99efd1d2ae608b2676bf6b6573cdabf52cce663b",
+            "type": "file",
+            "defaultpath": "",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/lscpu.txt",
+            "filesize": 20,
+            "name": "lscpu.txt"
+        },
+        "34": {
+            "name": "litex-linux_drc_routed.rpx",
+            "filesize": 46267,
+            "defaultpath": "",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/litex-linux_drc_routed.rpx",
+            "sha1hash": "63d215371b3f55f03ad5ff006a3cebb815a02ace",
+            "sha256hash": "5dcb368039672757cc109616316596deaf4cc4f2a20e4fa32f4ca97f87537309",
+            "type": "file"
+        },
+        "60": {
+            "name": "litex-linux_timing_summary_routed.rpt",
+            "filesize": 769067,
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/litex-linux_timing_summary_routed.rpt",
+            "subtype": "data",
+            "defaultpath": "",
+            "type": "file",
+            "sha1hash": "8250c3f1f123f7e5849ee33632d371766ef3b155",
+            "sha256hash": "5bf6b549860628ea2024ea82fa5052156d839e7c7ee5159d295f37102657612a"
+        },
+        "8": {
+            "type": "file",
+            "sha256hash": "ab914e7fa99f5c1fdaa839cb40bc62ac678fca2d0da123b4a23dc3525ad7c0a4",
+            "sha1hash": "bc0d1980aedae39f28dd780b6f17b67f717667ce",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.cache/wt/project.wpc",
+            "defaultpath": "",
+            "filesize": 121,
+            "name": "project.wpc"
+        },
+        "65": {
+            "name": "litex-linux_utilization_placed.rpt",
+            "filesize": 10107,
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/litex-linux_utilization_placed.rpt",
+            "defaultpath": "",
+            "type": "file",
+            "sha1hash": "68a75058db3021bd415eebdc7de897c25a14e3aa",
+            "sha256hash": "a1b802ee6295d3c7b2e3022f4fd526cfc034da0adce27c68e43a53bffc90b6f2"
+        },
+        "27": {
+            "filesize": 284,
+            "name": "litex-linux.lpr",
+            "type": "file",
+            "sha256hash": "70a24272869ddbec87b060f3538fc5bfdbbc7575b8906fb8815a1a679f254b11",
+            "sha1hash": "f3570566db02f240b702f41a85de3782c76e4475",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.hw/litex-linux.lpr",
+            "defaultpath": ""
+        },
+        "55": {
+            "filesize": 44,
+            "name": "litex-linux_route_status.pb",
+            "type": "file",
+            "sha256hash": "054bee4e4e8201a3670766b6b2aa1fbe0b8af3f4fb92eecd1025b800972dd990",
+            "sha1hash": "d28ed356e5342b4fa1d8c8e525b52f2ce7bfea41",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/litex-linux_route_status.pb",
+            "subtype": "data",
+            "defaultpath": ""
+        },
+        "15": {
+            "defaultpath": "",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/uname.txt",
+            "subtype": "data",
+            "sha1hash": "1ce185d9a182940b71bafacb2ba653dafc795153",
+            "sha256hash": "3c654532a682c2939a4180076dba3d6248baccafc4b50184fde31729499e15c7",
+            "type": "file",
+            "name": "uname.txt",
+            "filesize": 82
+        },
+        "46": {
+            "sha256hash": "783572309d4e4697fa40c7ea63194ec398efec44c40c601384c0de68e44ee011",
+            "sha1hash": "0960a3994826b39329ca8dedb6c457dedaca83cc",
+            "type": "file",
+            "defaultpath": "",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/litex-linux_control_sets_placed.rpt",
+            "subtype": "data",
+            "filesize": 90164,
+            "name": "litex-linux_control_sets_placed.rpt"
+        },
+        "28": {
+            "defaultpath": "",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/runme.bat",
+            "subtype": "data",
+            "sha1hash": "b6e42ac93473dbedb4ba28d9cc03b00b68a32235",
+            "sha256hash": "24885b3dbb922ea548c7e9f83d44c1b1a92b0aba195579f6c9969cffe50fcb00",
+            "type": "file",
+            "name": "runme.bat",
+            "filesize": 257
+        },
+        "40": {
+            "defaultpath": "",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/.place_design.end.rst",
+            "subtype": "data",
+            "sha1hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+            "sha256hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "type": "file",
+            "name": ".place_design.end.rst",
+            "filesize": 0
+        },
+        "83": {
+            "defaultpath": "",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/.init_design.end.rst",
+            "subtype": "data",
+            "sha1hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+            "sha256hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "type": "file",
+            "name": ".init_design.end.rst",
+            "filesize": 0
+        },
+        "31": {
+            "sha256hash": "98c18794b278a29558dcb53c53fcbeaca0f3417c01e30b52ecf8967974f02b6a",
+            "sha1hash": "4cb99d0df9547a0788a2b34d5f39319568b94cd5",
+            "type": "file",
+            "defaultpath": "",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/litex-linux_power_routed.rpx",
+            "subtype": "data",
+            "filesize": 4520695,
+            "name": "litex-linux_power_routed.rpx"
+        },
+        "64": {
+            "defaultpath": "",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/.vivado.begin.rst",
+            "subtype": "data",
+            "sha1hash": "0393919ba27b331e8c76a6665b3cd7c99ada0f63",
+            "sha256hash": "b8f127f6e272b9e5307137c45c9c84c817f965a03f00734ea6fc9b06a191dda7",
+            "type": "file",
+            "name": ".vivado.begin.rst",
+            "filesize": 159
+        },
+        "30": {
+            "defaultpath": "",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/litex-linux_methodology_drc_routed.rpx",
+            "subtype": "data",
+            "sha1hash": "878731b46d6aed0c6e2203d29511a90259194fde",
+            "sha256hash": "8fab35147bdb2430ba29d811073f9229d72dbacd1fe00e869439aea847503eda",
+            "type": "file",
+            "name": "litex-linux_methodology_drc_routed.rpx",
+            "filesize": 199049
+        },
+        "52": {
+            "defaultpath": "",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/ISEWrap.sh",
+            "subtype": "data",
+            "sha1hash": "2ba2498220e86f4418a28466ddec413265af9cbe",
+            "sha256hash": "a9705aa05f7bfc31bbc927e1198cc23c97027ad111288c61959e6f5c98ed3574",
+            "type": "file",
+            "name": "ISEWrap.sh",
+            "filesize": 1664
+        },
+        "12": {
+            "sha256hash": "05bdbcb4365d72a605ca877b50414afc8adc740c8185af9d57889cba8e6e4252",
+            "sha1hash": "760586691239a586c64c6b0edca9f9c4cc701712",
+            "type": "file",
+            "defaultpath": "",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.tcl",
+            "filesize": 122,
+            "name": "litex-linux.tcl"
+        },
+        "41": {
+            "name": "litex-linux_clock_utilization_routed.rpt",
+            "filesize": 33480,
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/litex-linux_clock_utilization_routed.rpt",
+            "defaultpath": "",
+            "type": "file",
+            "sha1hash": "ce652a9cf410a053b01f2527d9f916e73042e01d",
+            "sha256hash": "4a2ac94bafc57cd8155c35d864a614163d648ecd145c86d33e803292cb730dda"
+        },
+        "14": {
+            "name": "yosys.log",
+            "filesize": 4287306,
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/yosys.log",
+            "defaultpath": "",
+            "type": "file",
+            "sha1hash": "cc5de2657511c889eb6045c57dac0626a93da5dc",
+            "sha256hash": "90c610bff390137290733dab0a078a832f458e5741825928499c7ecdbfc46fbb"
+        },
+        "36": {
+            "filesize": 723,
+            "name": "litex-linux_power_summary_routed.pb",
+            "type": "file",
+            "sha256hash": "bb600e33b6939f2843fbb10a1924d727b66fc8874b5c37a984a51aea48a402e5",
+            "sha1hash": "6aecb965edefa093ea6543b237caf79e4d2cc50a",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/litex-linux_power_summary_routed.pb",
+            "defaultpath": ""
+        },
+        "54": {
+            "name": "litex-linux_power_routed.rpt",
+            "filesize": 13455,
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/litex-linux_power_routed.rpt",
+            "defaultpath": "",
+            "type": "file",
+            "sha1hash": "b8de14a03d86cca34483b84cb7990cee0abc8735",
+            "sha256hash": "7b64d7149d046538c177e2f258e90df7f0cdee1ff1312bf21ddba171cddaf818"
+        },
+        "77": {
+            "filesize": 73945,
+            "name": "litex-linux.vdi",
+            "type": "file",
+            "sha256hash": "fe01547924cfa95a9359998e67128aed5b1367bab42b56eb10fd54d6f74d381d",
+            "sha1hash": "13450c85e3ec3bb4a868d403b238d590cfe72445",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/litex-linux.vdi",
+            "subtype": "data",
+            "defaultpath": ""
+        },
+        "62": {
+            "sha256hash": "8da2608eeba58577c064d0cb9aea4ce7be00488008b7bffbc594eded6a45c040",
+            "sha1hash": "a7dd54683e067966689aff6b3b16ef093c032f2e",
+            "type": "file",
+            "defaultpath": "",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/litex-linux_placed.dcp",
+            "subtype": "data",
+            "filesize": 3019150,
+            "name": "litex-linux_placed.dcp"
+        },
+        "78": {
+            "sha256hash": "49a28e66264af48ceda54b4506fd11f53cbc3b2593c99669fbeb4b532e0c65d5",
+            "sha1hash": "0b205a62885228fea8e5ba9e52254ca28e6375e7",
+            "type": "file",
+            "defaultpath": "",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/usage_statistics_webtalk.xml",
+            "subtype": "data",
+            "filesize": 41982,
+            "name": "usage_statistics_webtalk.xml"
+        },
+        "61": {
+            "type": "file",
+            "sha256hash": "5269be30f9c5d09ab77fccc6b43e2a82db18e1ca6c52959e1d62e91ecceef479",
+            "sha1hash": "20606bbc93d5010c9d0b000555fe14fbf71a1190",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/init_design.pb",
+            "defaultpath": "",
+            "filesize": 5239,
+            "name": "init_design.pb"
+        },
+        "44": {
+            "filesize": 161,
+            "name": ".place_design.begin.rst",
+            "sha256hash": "5ad965291e7e9e8ce5cdbf92968ed1a9f319b4261a553762c8ffe2568b65c22e",
+            "sha1hash": "22563e4e91da5229e824a8a3315dd0a2c13f229e",
+            "type": "file",
+            "defaultpath": "",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/.place_design.begin.rst",
+            "subtype": "data"
+        },
+        "11": {
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/vivado_51.backup.jou",
+            "subtype": "data",
+            "defaultpath": "",
+            "type": "file",
+            "sha1hash": "96b087601bf14494f9d6a0595bbd87f91a407222",
+            "sha256hash": "f46d819f16dedec29a736397031a72474a02ed6c1abaf8f14fc0b7c51c942399",
+            "name": "vivado_51.backup.jou",
+            "filesize": 747
+        },
+        "42": {
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/gen_run.xml",
+            "subtype": "data",
+            "defaultpath": "",
+            "type": "file",
+            "sha1hash": "f2b8ae0639024dcb23c835e97ffddf693d79027f",
+            "sha256hash": "ecb1b7fb2a1ab6c302c0536a5e32ee592aa497e6bb30a5071f8eb2fcd5b30ff1",
+            "name": "gen_run.xml",
+            "filesize": 5640
+        },
+        "2": {
+            "type": "file",
+            "sha256hash": "b5ae1ed3abd559cbfa3d293f6e2889bbc56de1a233f2a4230cc7722c584050cf",
+            "sha1hash": "d9831ed75d8cdecc605c5f92c1d2ec53c79f0125",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/Makefile",
+            "defaultpath": "",
+            "filesize": 815,
+            "name": "Makefile"
+        },
+        "79": {
+            "filesize": 17294,
+            "name": "route_design.pb",
+            "sha256hash": "3c5ecc6560ac11de807b8c5647aa23c20839900e3ddbaf1527dd27d610b8c906",
+            "sha1hash": "3d01cb0e996e4679d24cf5b8702f1de89fe50fc7",
+            "type": "file",
+            "defaultpath": "",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/route_design.pb"
+        },
+        "51": {
+            "filesize": 0,
+            "name": ".route_design.end.rst",
+            "type": "file",
+            "sha256hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "sha1hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/.route_design.end.rst",
+            "defaultpath": ""
+        },
+        "23": {
+            "filesize": 11390,
+            "name": "hydra-build-products",
+            "type": "file",
+            "sha256hash": "2bfea4676e397b275415a334dfe09c4ed505a12133ce3507221fd0b14668bfe0",
+            "sha1hash": "4491112ffcd4d7e1cb2738f8eae6cd77c7767fdd",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/nix-support/hydra-build-products",
+            "defaultpath": ""
+        },
+        "35": {
+            "filesize": 4199145,
+            "name": "litex-linux_routed.dcp",
+            "type": "file",
+            "sha256hash": "356a3ed04e6b5c16a41b6e27e5ef9f3f9157cae790386b839fb234c4d2b7e481",
+            "sha1hash": "70d9f0dbd64800c48b2f49750e5a54d8ac92acb3",
+            "subtype": "data",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/litex-linux.runs/impl_1/litex-linux_routed.dcp",
+            "defaultpath": ""
+        }
+    },
+    "id": 1397,
+    "stoptime": 1593130245
+}

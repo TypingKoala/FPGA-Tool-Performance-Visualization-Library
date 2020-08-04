@@ -114,17 +114,47 @@ class HydraFetcher(Fetcher):
             raise IndexError(f"Invalid eval_num: {self.eval_num}")
         build_nums = evals_json["evals"][self.eval_num]["builds"]
 
-        # collect the 'meta.json' build products
+        # fetch build info and download 'meta.json'
         data = []
         for build_num in build_nums:
+            # get build info
             resp = requests.get(
-                f"https://hydra.vtr.tools/build/{build_num}/download/1/meta.json",
+                f"https://hydra.vtr.tools/build/{build_num}",
+                headers={"Content-Type": "application/json"},
+            )
+            if resp.status_code != 200:
+                raise Exception(f"Unable to get build {build_num}, got status code {resp.status_code}.")
+            
+            decoded = None
+            try:
+                decoded = resp.json()
+            except json.decoder.JSONDecodeError as err:
+                raise Exception(f"Unable to decode build {build_num} JSON file, {str(err)}")
+                
+            # check if build was successful
+            if decoded.get("buildstatus") != 0:
+                print(f"Warning: Build {build_num} failed with non-zero exit. Skipping...")
+                continue
+
+            # check if meta.json exists
+            meta_json_id = None
+            for product_id, product_desc in decoded.get("buildproducts", {}).items():
+                if product_desc.get("name", "") == "meta.json":
+                    meta_json_id = product_id
+            
+            if meta_json_id is None:
+                print(f"Warning: Build {build_num} does not contain meta.json file. Skipping...")
+                continue
+            
+            # download meta.json
+            resp = requests.get(
+                f"https://hydra.vtr.tools/build/{build_num}/download/{meta_json_id}/meta.json",
                 headers={"Content-Type": "application/json"},
             )
             if resp.status_code != 200:
                 print(
                     "Warning:",
-                    f"Unable to get build {build_num}. It might have failed.",
+                    f"Unable to get build {build_num} meta.json file.",
                 )
                 continue
             try:

@@ -1,0 +1,15 @@
+{
+    "buildstatus": 0,
+    "buildproducts": {
+        "5": {
+            "sha256hash": "93e161b2d8641c926b304f6c7d55c4a20d18a1e449ccb6aa81f5619f239e051b",
+            "sha1hash": "dc0313c9ea558763f3e7ac6d8870d09afb0b287d",
+            "type": "file",
+            "defaultpath": "",
+            "path": "/nix/store/ajav7i3q5ii38pm24diknyccs8hn6nwd-fpga-tool-perf-baselitex-vivado-yosys-arty/meta.json",
+            "subtype": "data",
+            "filesize": 2168,
+            "name": "meta.json"
+        }
+    }
+}
