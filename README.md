@@ -47,6 +47,10 @@ make html
 * `sphinx-rtd-theme`: for documentation generation (theme) ([website](https://github.com/readthedocs/sphinx_rtd_theme))
 
 ## Changes
+### 0.2.0
+* Added evaluation concatenation and `CompareToFirst` processors for relative comparisons between evaluations.
+* Fixed `HydraFetcher` issues when fetching an older evaluation that contains more than one build artifact.
+
 ### 0.1.6
 * Added support for filter and aggregator processors, fixes [#9](https://github.com/SymbiFlow/FPGA-Tool-Performance-Visualization-Library/issues/9)
 
