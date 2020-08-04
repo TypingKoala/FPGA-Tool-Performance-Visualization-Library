@@ -123,13 +123,13 @@ class HydraFetcher(Fetcher):
                 headers={"Content-Type": "application/json"},
             )
             if resp.status_code != 200:
-                raise Exception(f"Unable to get build {build_num} due to non-200 status code.")
+                raise Exception(f"Unable to get build {build_num}, got status code {resp.status_code}.")
             
             decoded = None
             try:
                 decoded = resp.json()
-            except json.decoder.JSONDecodeError:
-                raise Exception(f"Unable to decode build {build_num} JSON file.")
+            except json.decoder.JSONDecodeError as err:
+                raise Exception(f"Unable to decode build {build_num} JSON file, {str(err)}")
                 
             # check if build was successful
             if decoded.get("buildstatus") != 0:
