@@ -12,8 +12,9 @@ Take a look at the notebooks below to demonstrate the functionality of FTPVL.
 
 1. [Using `HydraFetcher` and Processors](https://colab.research.google.com/drive/1BIQ-iulDFpzcve7lGJPwLePJ5ETBJ6Ut?usp=sharing)
 2. [Styling tables with `SingleTableVisualizer`](https://colab.research.google.com/drive/1u3EnmIYnTBk-LXZhqNHt_h4aMuq-_cWq?usp=sharing)
-3. [Comparing two different Evaluations](https://colab.research.google.com/drive/1I7InmA6210vIIwdQ7TGHE6aF_WwIm1dM?usp=sharing)
+3. [Comparing two Evaluations using the internal dataframe](https://colab.research.google.com/drive/1I7InmA6210vIIwdQ7TGHE6aF_WwIm1dM?usp=sharing)
 4. [Filtering and Aggregating an Evaluation](https://colab.research.google.com/drive/1DDwlQFS81RGLL-q8DsgICF-HOC5ir6oS?usp=sharing)
+5. [Comparing multiple Evaluations](https://colab.research.google.com/drive/1kSF3bEjG_c6bLh9PLus9GPk5aLrtYhly?usp=sharing)
 
 ## Documentation
 Extensive documentation, including a *Getting Started* guide, is available on
