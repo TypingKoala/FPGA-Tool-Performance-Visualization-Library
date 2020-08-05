@@ -637,8 +637,8 @@ class CompareToFirst(Processor):
             new_cols.extend([col, col + self._suffix])
 
         base = input_df.loc[0, self._column_names]
-        relative_ratio = (input_df[self._column_names] / base) ** self._column_negations
-        renamed_ratio = relative_ratio.rename(lambda col: col + self._suffix, axis=1)
+        baseline_ratio = (input_df[self._column_names] / base) ** self._column_negations
+        renamed_ratio = baseline_ratio.rename(lambda col: col + self._suffix, axis=1)
         return pd.concat([input_df, renamed_ratio], axis=1)[new_cols]
 
     def process(self, input_eval: Evaluation) -> Evaluation:
