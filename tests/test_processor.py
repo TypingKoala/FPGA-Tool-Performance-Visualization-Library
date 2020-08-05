@@ -724,16 +724,16 @@ class TestProcessor:
             "b": Direction.MAXIMIZE
         }
 
-        pipeline = [CompareToFirst(direction)]
+        pipeline = [CompareToFirst(direction, suffix=".diff")]
         eval1 = eval1.process(pipeline)
 
         expected_df = pd.DataFrame(
             [
-                {"a": 1, "a.relative": 1.0/1, "b": 5, "b.relative": 5.0/5},
-                {"a": 2, "a.relative": 2.0/1, "b": 4, "b.relative": 4.0/5},
-                {"a": 3, "a.relative": 3.0/1, "b": 3, "b.relative": 3.0/5},
-                {"a": 4, "a.relative": 4.0/1, "b": 2, "b.relative": 2.0/5},
-                {"a": 5, "a.relative": 5.0/1, "b": 1, "b.relative": 1.0/5},
+                {"a": 1, "a.diff": 1.0/1, "b": 5, "b.diff": 5.0/5},
+                {"a": 2, "a.diff": 2.0/1, "b": 4, "b.diff": 4.0/5},
+                {"a": 3, "a.diff": 3.0/1, "b": 3, "b.diff": 3.0/5},
+                {"a": 4, "a.diff": 4.0/1, "b": 2, "b.diff": 2.0/5},
+                {"a": 5, "a.diff": 5.0/1, "b": 1, "b.diff": 1.0/5},
             ]
         )
         assert_frame_equal(eval1.get_df(), expected_df)
