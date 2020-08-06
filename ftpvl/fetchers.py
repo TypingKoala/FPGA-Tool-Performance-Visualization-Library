@@ -48,13 +48,19 @@ class HydraFetcher(Fetcher):
 
     Parameters
     ----------
-    project : str, optional
+    project : str
         The project name to use when fetching from Hydra
-    jobset : str, optional
+    jobset : str
         The jobset name to use when fetching from Hydra
     eval_num : int, optional
-        A non-negative integer for the evaluation number to download,
-        with `0` being the latest evaluation, by default 0
+        An integer that specifies the evaluation to download. Functionality
+        differs depending on whether `absolute_eval_num` is True, by default 0
+    absolute_eval_num : bool, optional
+        Flag that specifies if the eval_num is an absolute identifier instead of
+        a relative identifier. If True, the fetcher will find an evaluation
+        with the exact ID in `eval_num`. If False, `eval_num` should be a
+        non-negative integer with `0` being the latest evaluation and `1` being
+        the second latest evaluation, etc. By default False.
     mapping : dict, optional
         A dictionary mapping input column names to output
         column names, if needed for remapping, by default None
@@ -68,6 +74,7 @@ class HydraFetcher(Fetcher):
         project: str,
         jobset: str,
         eval_num: int = 0,
+        absolute_eval_num: bool = False,
         mapping: dict = None,
         hydra_clock_names: list = None
     ) -> None:
@@ -75,6 +82,7 @@ class HydraFetcher(Fetcher):
         self.project = project
         self.jobset = jobset
         self.eval_num = eval_num
+        self.absolute_eval_num = absolute_eval_num
         self.mapping = mapping
         self.hydra_clock_names = hydra_clock_names
 
@@ -110,9 +118,21 @@ class HydraFetcher(Fetcher):
         if resp.status_code != 200:
             raise ConnectionError("Unable to get evals from server.")
         evals_json = resp.json()
-        if self.eval_num >= len(evals_json["evals"]):
-            raise IndexError(f"Invalid eval_num: {self.eval_num}")
-        build_nums = evals_json["evals"][self.eval_num]["builds"]
+        
+        build_nums = []
+        if not self.absolute_eval_num: # if relative eval_num
+            if self.eval_num >= len(evals_json["evals"]):
+                raise IndexError(f"Invalid eval_num: {self.eval_num}")
+            build_nums = evals_json["evals"][self.eval_num]["builds"]
+            self._eval_id = evals_json["evals"][self.eval_num]["id"]
+        else:
+            for eval_data in evals_json["evals"]:
+                if eval_data["id"] == self.eval_num:
+                    build_nums = eval_data["builds"]
+            self._eval_id = self.eval_num
+        
+        if len(build_nums) == 0:
+            raise ValueError(f"Unable to find builds for eval_num {self.eval_num}")
 
         # fetch build info and download 'meta.json'
         data = []
@@ -165,7 +185,6 @@ class HydraFetcher(Fetcher):
         if len(data) == 0:
             raise ValueError(f"Unable to get any successful builds from eval_num {self.eval_num}.")
 
-        self._eval_id = evals_json["evals"][self.eval_num]["id"]
         return data
 
     def _preprocess(self, data: List[Dict]) -> pd.DataFrame:
