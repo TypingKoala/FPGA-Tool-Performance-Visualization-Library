@@ -87,6 +87,57 @@ class TestHydraFetcherSmall(unittest.TestCase):
                     eval_id = hf.get_evaluation().get_eval_id()
                     assert eval_id == eval_num + 1
 
+    def test_hydrafetcher_get_evaluation_eval_num_absolute(self):
+        """
+        get_evaluation() should return an Evaluation corresponding to the small
+        dataset and the specified *absolute* eval_num.
+
+        Tests whether the fetcher is able to get an exact evaluation by absolute
+        eval num.
+        """
+        with requests_mock.Mocker() as m:
+            evals_fn = 'tests/sample_data/evals.small.json'
+            evals_url = 'https://hydra.vtr.tools/jobset/dusty/fpga-tool-perf/evals'
+
+            build_fn = 'tests/sample_data/build.small.json'
+
+            # setup /evals request mock
+            with open(evals_fn, "r") as f:
+                json_data = f.read()
+                m.get(evals_url, text=json_data) 
+
+            # setup /build and /meta.json request mock
+            with open(build_fn, "r") as f:
+                json_data = f.read()
+
+                for build_num in range(12):
+                    # /build/:buildid
+                    build_url = f'https://hydra.vtr.tools/build/{build_num}'
+                    m.get(build_url, text=json_data)
+                    
+                    # /meta.json
+                    meta_url = f'https://hydra.vtr.tools/build/{build_num}/download/5/meta.json'
+                    payload = {"build_num": build_num}
+                    m.get(meta_url, json=payload) # setup /meta.json request mock
+
+            # run tests on different eval_num
+            for eval_num in range(1, 4):
+                with self.subTest(eval_num=eval_num):
+                    # if mapping is not defined, should not remap
+                    hf = HydraFetcher(
+                        project="dusty",
+                        jobset="fpga-tool-perf",
+                        eval_num=eval_num,
+                        absolute_eval_num=True)
+                    result = hf.get_evaluation().get_df()
+
+                    col = [x for x in range(eval_num * 4 - 4, eval_num * 4)]
+                    expected = pd.DataFrame({"build_num": col})
+                    assert_frame_equal(result, expected)
+
+                    eval_id = hf.get_evaluation().get_eval_id()
+                    assert eval_id == eval_num
+
     def test_hydrafetcher_get_evaluation_mapping(self):
         """
         get_evaluation() should return an Evaluation corresponding to the small
