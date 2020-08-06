@@ -230,7 +230,7 @@ Styling
 =======
 
 Now that the Evaluation has been processed, we can add styling so that
-important information stands out in the final visualization. This is achived
+important information stands out in the final visualization. This is achieved
 through a special type of Processor called :ref:`topics-styles`. 
 
 Styles are also run in a processing pipeline, but they always output CSS strings.
