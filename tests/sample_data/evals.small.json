@@ -27,5 +27,8 @@
             ],
             "id": 3
         }
-    ]
+    ],
+    "next": "?page=2",
+    "last": "?page=2",
+    "first": "?page=1"
 }
