@@ -26,6 +26,7 @@ class TestProcessor:
     FilterByIndex()
     Aggregate()
     GeomeanAggregate()
+    CompareToFirst()
     """
 
     def test_minusone(self):
@@ -191,7 +192,7 @@ class TestProcessor:
         eval1 = Evaluation(df, eval_id=10)
 
         # direction is -1 => normalize around minimum
-        pipeline = [AddNormalizedColumn("group", "value", "normalized", -1)]
+        pipeline = [AddNormalizedColumn("group", "value", "normalized", Direction.MINIMIZE)]
         result = eval1.process(pipeline)
         expected = pd.DataFrame(
             [
@@ -330,7 +331,7 @@ class TestProcessor:
         eval1 = Evaluation(df, eval_id=10)
 
         normalize_direction = {
-            "value": 1
+            "value": Direction.MINIMIZE
         }
         pipeline = [NormalizeAround(
             normalize_direction,
@@ -376,7 +377,7 @@ class TestProcessor:
         eval1 = Evaluation(df, eval_id=10)
 
         normalize_direction = {
-            "value": -1
+            "value": Direction.MAXIMIZE
         }
         pipeline = [NormalizeAround(
             normalize_direction,
@@ -415,7 +416,7 @@ class TestProcessor:
         eval1 = Evaluation(df, eval_id=10)
 
         normalize_direction = {
-            "value": 1
+            "value": Direction.MINIMIZE
         }
         pipeline = [Normalize(normalize_direction)]
 
@@ -635,6 +636,104 @@ class TestProcessor:
         expected_df = pd.DataFrame(
             [
                 {"a": expected_a, "b": expected_b, "c": expected_c}
+            ]
+        )
+        assert_frame_equal(eval1.get_df(), expected_df)
+        assert eval1.get_eval_id() == 20
+
+    def test_comparetofirst(self):
+        """ Test if CompareToFirst works with default params """
+        df = pd.DataFrame(
+            [
+                {"a": 1, "b": 5},
+                {"a": 2, "b": 4},
+                {"a": 3, "b": 3},
+                {"a": 4, "b": 2},
+                {"a": 5, "b": 1},
+            ]
+        )
+        eval1 = Evaluation(df, eval_id=20)
+
+        direction = {
+            "a": Direction.MAXIMIZE,
+            "b": Direction.MAXIMIZE
+        }
+
+        pipeline = [CompareToFirst(direction)]
+        eval1 = eval1.process(pipeline)
+
+        expected_df = pd.DataFrame(
+            [
+                {"a": 1, "a.relative": 1.0/1, "b": 5, "b.relative": 5.0/5},
+                {"a": 2, "a.relative": 2.0/1, "b": 4, "b.relative": 4.0/5},
+                {"a": 3, "a.relative": 3.0/1, "b": 3, "b.relative": 3.0/5},
+                {"a": 4, "a.relative": 4.0/1, "b": 2, "b.relative": 2.0/5},
+                {"a": 5, "a.relative": 5.0/1, "b": 1, "b.relative": 1.0/5},
+            ]
+        )
+        assert_frame_equal(eval1.get_df(), expected_df)
+        assert eval1.get_eval_id() == 20
+
+    def test_comparetofirst_dir_subset(self):
+        """ Test if CompareToFirst works with different direction and subset"""
+        df = pd.DataFrame(
+            [
+                {"a": 1, "b": 5},
+                {"a": 2, "b": 4},
+                {"a": 3, "b": 3},
+                {"a": 4, "b": 2},
+                {"a": 5, "b": 1},
+            ]
+        )
+        eval1 = Evaluation(df, eval_id=20)
+
+        direction = {
+            "a": Direction.MINIMIZE
+        }
+
+        pipeline = [CompareToFirst(direction)]
+        eval1 = eval1.process(pipeline)
+
+        expected_df = pd.DataFrame(
+            [
+                {"a": 1, "a.relative": 1.0/1},
+                {"a": 2, "a.relative": 1.0/2},
+                {"a": 3, "a.relative": 1.0/3},
+                {"a": 4, "a.relative": 1.0/4},
+                {"a": 5, "a.relative": 1.0/5},
+            ]
+        )
+        assert_frame_equal(eval1.get_df(), expected_df)
+        assert eval1.get_eval_id() == 20
+
+    def test_comparetofirst_suffix(self):
+        """ Test if CompareToFirst works with different suffix """
+        df = pd.DataFrame(
+            [
+                {"a": 1, "b": 5},
+                {"a": 2, "b": 4},
+                {"a": 3, "b": 3},
+                {"a": 4, "b": 2},
+                {"a": 5, "b": 1},
+            ]
+        )
+        eval1 = Evaluation(df, eval_id=20)
+
+        direction = {
+            "a": Direction.MAXIMIZE,
+            "b": Direction.MAXIMIZE
+        }
+
+        pipeline = [CompareToFirst(direction, suffix=".diff")]
+        eval1 = eval1.process(pipeline)
+
+        expected_df = pd.DataFrame(
+            [
+                {"a": 1, "a.diff": 1.0/1, "b": 5, "b.diff": 5.0/5},
+                {"a": 2, "a.diff": 2.0/1, "b": 4, "b.diff": 4.0/5},
+                {"a": 3, "a.diff": 3.0/1, "b": 3, "b.diff": 3.0/5},
+                {"a": 4, "a.diff": 4.0/1, "b": 2, "b.diff": 2.0/5},
+                {"a": 5, "a.diff": 5.0/1, "b": 1, "b.diff": 1.0/5},
             ]
         )
         assert_frame_equal(eval1.get_df(), expected_df)
