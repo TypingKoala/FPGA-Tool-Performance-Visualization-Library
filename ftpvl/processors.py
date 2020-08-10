@@ -543,3 +543,19 @@ class GeomeanAggregate(Aggregate):
             x = x.dropna()
             return stats.gmean(x) if not x.empty else math.nan
         super().__init__(geomean)
+
+
+class IcestormLegacy(Processor):
+    """
+    Processor that transforms legacy Icestorm frequency data (which is reported
+    in MHz) into Hz.
+
+    Previously, the frequency value of tests on the Icestorm  was reported in MHz,
+    while all other processors report in Hz. This processor can be applied to
+    Evaluations that were performed before 8/1/2020.
+    """
+    def __init__(self):
+        return
+
+    def process(self, input_eval: Evaluation):
+        raise NotImplementedError #TODO
