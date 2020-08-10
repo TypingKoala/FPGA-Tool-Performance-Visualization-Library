@@ -41,7 +41,6 @@ make html
 * `pylint`: for linting ([website](https://www.pylint.org/))
 * `pytest`: testrunner ([website](https://docs.pytest.org/en/stable/))
 * `coverage`: for coverage testing ([website](https://coverage.readthedocs.io/))
-* `black`: for auto-formatting ([website](https://github.com/psf/black))
 * `sphinx`: for documentation generation ([website](https://www.sphinx-doc.org/en/master/))
 * `sphinx-rtd-theme`: for documentation generation (theme) ([website](https://github.com/readthedocs/sphinx_rtd_theme))
 
