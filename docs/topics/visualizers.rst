@@ -16,7 +16,7 @@ You can choose to show the version info of each test result by setting the
 the display of the version info that is provided by Hydra.
 
 
-Displaying the Visualizaton
+Displaying the Visualization
 ============================
 After instantiating the desired visualizer, you can call the 
 ``get_visualization()`` method to return an object that can be displayed in an 
