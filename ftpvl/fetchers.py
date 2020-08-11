@@ -195,7 +195,7 @@ class HydraFetcher(Fetcher):
             date = row["date"]
             board = row["board"]
             timestamp = datetime.fromisoformat(date)
-            return timestamp < datetime(2020, 8, 1) and board == "icebreaker"
+            return timestamp < datetime(2020, 7, 31) and board == "icebreaker"
         except KeyError:
             print("Warning: Unable to find date and board in meta.json, required for supporting legacy Icebreaker.")
             return False # Assume not legacy icebreaker
