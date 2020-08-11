@@ -76,6 +76,8 @@ Processors API
 .. autoclass:: ftpvl.processors.GeomeanAggregate
     :members:
 
+.. autoclass:: ftpvl.processors.CompareToFirst
+
 .. _topics-api-styles:
 
 Styles API
@@ -100,3 +102,20 @@ Visualizers API
 
 .. autoclass:: ftpvl.visualizers.SingleTableVisualizer
     :members:
+
+Enums
+=====
+Direction
+*********
+.. autoclass:: ftpvl.processors.Direction
+    :members:
+
+    .. autoattribute:: MAXIMIZE
+    
+        Indicates that the corresponding metric is optimized by 
+        *maximizing* the value
+    
+    .. autoattribute:: MINIMIZE
+    
+        Indicates that the corresponding metric is optimized by
+        *minimizing* the value
