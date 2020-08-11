@@ -123,9 +123,9 @@ class HydraFetcher(Fetcher):
         evals_json = resp.json()
 
         if self.absolute_eval_num:
-            self._abs_eval_id = self.eval_num # set absolute id for eval
+            self._abs_eval_id = eval_num # set absolute id for eval
             for eval_data in evals_json["evals"]:
-                if eval_data["id"] == self.eval_num:
+                if eval_data["id"] == eval_num:
                     return eval_data["builds"]
             if "next" in evals_json:
                 return self._get_builds(
