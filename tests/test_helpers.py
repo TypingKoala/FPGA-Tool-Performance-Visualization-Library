@@ -39,30 +39,13 @@ class TestHelpers():
         result = get_versions({})
         assert result == {}
 
-    def test_rescale_actual_freq(self):
-        """ Test if rescaling works correctly """
-        result = rescale_actual_freq(1_000_000)
-        assert result == 1_000_000
-
-        result = rescale_actual_freq(1_000_001)
-        assert result == 1.000001
-
-        result = rescale_actual_freq(1000)
-        assert result == 1000
-
-        result = rescale_actual_freq(32_000_000)
-        assert result == 32
-
-        result = rescale_actual_freq(5_000_000)
-        assert result == 5
-
     def test_get_actual_freq(self):
         """ Test if get_actual_freq correctly extracts max frequency """
         obj = {
-            "max_freq": 500
+            "max_freq": 5_000_000
         }
         result = get_actual_freq(flatten(obj))
-        assert result == 500
+        assert result == 5
 
         obj = {
             "max_freq": {

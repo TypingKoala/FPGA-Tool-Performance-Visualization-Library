@@ -1,4 +1,5 @@
 """ Fetchers are responsible for ingesting and standardizing data for future processing. """
+from datetime import datetime
 import json
 from typing import Any, Dict, List
 
@@ -168,6 +169,37 @@ class HydraFetcher(Fetcher):
         self._eval_id = evals_json["evals"][self.eval_num]["id"]
         return data
 
+    def _check_legacy_icebreaker(self, row):
+        """
+        Returns True if row is from a test on an Icebreaker board before Aug 1,
+        2020.
+
+        This is useful because these legacy tests recorded frequency in MHz
+        instead of Hz, while all other boards record in Hz. This flag can be
+        used to check if the units need to be changed.
+
+        Parameters
+        ----------
+        row : dict
+            a dictionary that is the result of decoding a meta.json file
+
+        Returns
+        -------
+        bool
+            Returns true if row is icebreaker board before Aug 1, 2020. False
+            otherwise.
+        """
+        date = None
+        board = None
+        try:
+            date = row["date"]
+            board = row["board"]
+            timestamp = datetime.fromisoformat(date)
+            return timestamp < datetime(2020, 8, 1) and board == "icebreaker"
+        except KeyError:
+            print("Warning: Unable to find date and board in meta.json, required for supporting legacy Icebreaker.")
+            return False # Assume not legacy icebreaker
+
     def _preprocess(self, data: List[Dict]) -> pd.DataFrame:
         """
         Using data from _download(), processes and standardizes the data and
@@ -177,6 +209,7 @@ class HydraFetcher(Fetcher):
 
         processed_data = []
         for row in flattened_data:
+            legacy_icestorm = self._check_legacy_icebreaker(row)
             processed_row = {}
             if self.mapping is None:
                 processed_row = row
@@ -184,6 +217,8 @@ class HydraFetcher(Fetcher):
                 for in_col_name, out_col_name in self.mapping.items():
                     processed_row[out_col_name] = row[in_col_name]
             processed_row["freq"] = Helpers.get_actual_freq(row, self.hydra_clock_names)
+            if legacy_icestorm:
+                processed_row["freq"] *= 1_000_000 # convert mhz to hz
             processed_row.update(Helpers.get_versions(row))
             processed_data.append(processed_row)
 
