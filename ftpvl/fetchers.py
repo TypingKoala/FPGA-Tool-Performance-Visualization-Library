@@ -216,9 +216,14 @@ class HydraFetcher(Fetcher):
             else:
                 for in_col_name, out_col_name in self.mapping.items():
                     processed_row[out_col_name] = row[in_col_name]
-            processed_row["freq"] = Helpers.get_actual_freq(row, self.hydra_clock_names)
-            if legacy_icestorm:
-                processed_row["freq"] *= 1_000_000 # convert mhz to hz
+
+            actual_freq = Helpers.get_actual_freq(row, self.hydra_clock_names)
+            if actual_freq:
+                if legacy_icestorm:
+                    # freq in MHz, no change needed
+                    processed_row["freq"] = actual_freq
+                else: # 
+                    processed_row["freq"] = actual_freq / 1_000_000 # convert hz to mhz
             processed_row.update(Helpers.get_versions(row))
             processed_data.append(processed_row)
 

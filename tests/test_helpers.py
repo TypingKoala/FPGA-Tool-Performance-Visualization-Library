@@ -45,7 +45,7 @@ class TestHelpers():
             "max_freq": 5_000_000
         }
         result = get_actual_freq(flatten(obj))
-        assert result == 5
+        assert result == 5_000_000
 
         obj = {
             "max_freq": {
@@ -55,7 +55,7 @@ class TestHelpers():
             }
         }
         result = get_actual_freq(flatten(obj))
-        assert result == 12
+        assert result == 12_000_000
 
     def test_get_actual_freq_hydra_clock_names(self):
         """ Test if get_actual_freq correctly selects the most important clock """
@@ -72,7 +72,7 @@ class TestHelpers():
             }
         }
         result = get_actual_freq(flatten(obj), ["clk", "sys_clk", "clk_i"])
-        assert result == 12
+        assert result == 12_000_000
 
         # should select sys_clk since it is higher priority
         obj = {
@@ -86,7 +86,7 @@ class TestHelpers():
             }
         }
         result = get_actual_freq(flatten(obj), ["clk", "sys_clk", "clk_i"])
-        assert result == 24
+        assert result == 24_000_000
 
         # should select clk_i since it is higher priority 
         obj = {
@@ -100,7 +100,7 @@ class TestHelpers():
             }
         }
         result = get_actual_freq(flatten(obj), ["clk_i", "sys_clk", "clk"])
-        assert result == 12
+        assert result == 12_000_000
 
         # should select shortest clock name since none are specified
         obj = {
@@ -114,7 +114,7 @@ class TestHelpers():
             }
         }
         result = get_actual_freq(flatten(obj), ["clk", "sys_clk", "clk_i"])
-        assert result == 12
+        assert result == 12_000_000
     
     def test_get_styling(self):
         """ Test if get_styling correctly queries colormap and returns correct

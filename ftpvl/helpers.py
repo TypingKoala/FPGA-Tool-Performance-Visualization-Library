@@ -65,12 +65,15 @@ def get_versions(obj: dict) -> dict:
 def get_actual_freq(obj: dict, hydra_clock_names: list = None) -> Union[int, float]:
     """
     Given a flattened object decoded from meta.json, return the actual frequency
-    as a number in megahertz.
+    from the obj as a number (that has undetermined units).
 
     Since a meta.json object might contain multiple frequencies, we look through
     all clock names specified in hydra_clock_names and use the first one in the
     list. If none of the specified clock names exists in the object, we use
     the shortest clock name to find the frequency.
+
+    The output of this function returns a number with undetermined units. 
+    External logic should handle converting units if necessary.
 
     Parameters
     ----------
@@ -85,21 +88,19 @@ def get_actual_freq(obj: dict, hydra_clock_names: list = None) -> Union[int, flo
     Union[int, float]
         the frequency of the actual clock specified in the object
     """
-    ONE_MHZ = 1_000_000
-
     # set default clock names
     if hydra_clock_names is None:
         hydra_clock_names = settings.default_hydra_clock_names
 
     # if max_freq is unnested
     if "max_freq" in obj:
-        return obj["max_freq"] / ONE_MHZ
+        return obj["max_freq"]
     else:
         # check if max_freq contains clock_name in HYDRA_CLOCK_NAMES
         for clock_name in hydra_clock_names:
             key = f"max_freq.{clock_name}.actual"
             if key in obj:
-                return obj[key] / ONE_MHZ
+                return obj[key]
 
         # if none of those exist, choose the shortest one or return None
         max_freq_keys = [
@@ -107,7 +108,7 @@ def get_actual_freq(obj: dict, hydra_clock_names: list = None) -> Union[int, flo
         ]
         if len(max_freq_keys) > 0:
             shortest_clock_name = min(max_freq_keys, key=len)
-            return obj[shortest_clock_name] / ONE_MHZ
+            return obj[shortest_clock_name]
         else:
             return None
 
