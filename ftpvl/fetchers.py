@@ -192,9 +192,9 @@ class HydraFetcher(Fetcher):
         date = None
         board = None
         try:
-            date = row["date"]
+            date = row["date"] # format: 2020-07-17T22:12:41
             board = row["board"]
-            timestamp = datetime.fromisoformat(date)
+            timestamp = datetime.strptime(date, "%Y-%m-%dT%H:%M:%S")
             return timestamp < datetime(2020, 7, 31) and board == "icebreaker"
         except KeyError:
             print("Warning: Unable to find date and board in meta.json, required for supporting legacy Icebreaker.")
@@ -222,7 +222,7 @@ class HydraFetcher(Fetcher):
                 if legacy_icestorm:
                     # freq in MHz, no change needed
                     processed_row["freq"] = actual_freq
-                else: # 
+                else:
                     processed_row["freq"] = actual_freq / 1_000_000 # convert hz to mhz
             processed_row.update(Helpers.get_versions(row))
             processed_data.append(processed_row)
