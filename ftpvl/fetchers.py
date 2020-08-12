@@ -171,7 +171,7 @@ class HydraFetcher(Fetcher):
 
     def _check_legacy_icebreaker(self, row):
         """
-        Returns True if row is from a test on an Icebreaker board before Aug 1,
+        Returns True if row is from a test on an Icebreaker board before Jul 31,
         2020.
 
         This is useful because these legacy tests recorded frequency in MHz
