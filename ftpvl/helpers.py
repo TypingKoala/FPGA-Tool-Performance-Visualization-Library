@@ -65,7 +65,7 @@ def get_versions(obj: dict) -> dict:
 def get_actual_freq(obj: dict, hydra_clock_names: list = None) -> Union[int, float]:
     """
     Given a flattened object decoded from meta.json, return the actual frequency
-    from the obj as a number (that has undetermined units).
+    as a number.
 
     Since a meta.json object might contain multiple frequencies, we look through
     all clock names specified in hydra_clock_names and use the first one in the
