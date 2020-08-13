@@ -1,11 +1,20 @@
 """ Processors transform Evaluations to be more useful when visualized. """
 import math
 from typing import Any, Callable, Dict, List, Union
+from enum import Enum
 
 import numpy as np
 import pandas as pd
 from ftpvl.evaluation import Evaluation
 from scipy import stats
+
+class Direction(Enum):
+    """
+    Represents the optimization direction for certain test metrics. For example,
+    runtime is usually minimized, while frequency is maximized.
+    """
+    MINIMIZE = -1
+    MAXIMIZE = 1
 
 
 class Processor:
@@ -141,19 +150,22 @@ class AddNormalizedColumn(Processor):
     output_col_name : str
         the column to write the normalized values to
 
-    direction : int (either 1 or -1)
-        the direction to find the best value to normalize against. If 1, then
-        the best value is the max and all other values are compared to it. If -1,
-        the best value is the min and all other values are compared to it.
+    direction : Direction
+        specifies how to find the 'best' value to normalize against. By default
+        MAXIMIZE, all values will be compared to the max value of the input
+        column.
     """
 
-    def __init__(self, groupby: str, input_col_name: str, output_col_name: str, direction: int = 1):
-
+    def __init__(
+        self,
+        groupby: str,
+        input_col_name: str,
+        output_col_name: str,
+        direction: Direction = Direction.MAXIMIZE
+    ):
         self._groupby = groupby
         self._input_col_name = input_col_name
         self._output_col_name = output_col_name
-        
-        assert direction in [1, -1], "direction must be either 1 or -1"
         self._direction = direction
 
     def _normalize(self, input_df: pd.DataFrame):
@@ -161,7 +173,7 @@ class AddNormalizedColumn(Processor):
         Given a dataframe, find the max value of the input col name and
         create a new column with the normalized value of each row
         """
-        if self._direction == 1:
+        if self._direction == Direction.MAXIMIZE:
             max_val = input_df[self._input_col_name].max()
         else:
             max_val = input_df[self._input_col_name].min()
@@ -284,11 +296,10 @@ class NormalizeAround(Processor):
 
     Parameters
     ----------
-    normalize_direction : dict
-        a dictionary mapping column names to 1 or -1. If a value is
-        optimized when smaller, set the negation to 1. If it is optimized
-        when larger, set the negation to -1. If there is no entry,
-        normalization is skipped.
+    normalize_direction : Dict[str, Direction]
+        a dictionary mapping column names to the optimization direction of
+        the column. Used to determine if increases or decreases to baseline are
+        perceived to be 'better'.
 
     group_by : str
         the column name used to group results before finding the baseline
@@ -303,16 +314,25 @@ class NormalizeAround(Processor):
         the value of the baseline result at idx_name
     """
 
-    def __init__(self, normalize_direction: dict, group_by: str, idx_name: str, idx_value: str):
+    def __init__(
+        self,
+        normalize_direction: Dict[str, Direction],
+        group_by: str,
+        idx_name: str,
+        idx_value: str
+    ):
         self._groupby = group_by
         self._idx_name = idx_name
         self._idx_value = idx_value
 
         self._column_names = []
         self._column_negations = []
-        for name, negation in normalize_direction.items():
+        for name, direction in normalize_direction.items():
             self._column_names.append(name)
-            self._column_negations.append(negation)
+            if direction == Direction.MINIMIZE:
+                self._column_negations.append(1)
+            else:
+                self._column_negations.append(-1)
 
     def _normalize_around(self, input_df):
         """
@@ -357,19 +377,22 @@ class Normalize(Processor):
 
     Parameters
     ----------
-    normalize_direction : dict
-        a dictionary mapping column names to 1 or -1. If a value is optimized
-        when smaller, set the negation to 1. If it is optimized when larger, set
-        the negation to -1. If there is no entry, normalization is skipped.
+    normalize_direction : Dict[str, Direction]
+        a dictionary mapping column names to the optimization direction of
+        the column. Used to determine if increases or decreases to baseline are
+        perceived to be 'better'.
     """
 
-    def __init__(self, normalize_direction: dict):
+    def __init__(self, normalize_direction: Dict[str, Direction]):
 
         self._column_names = []
         self._column_negations = []
-        for name, negation in normalize_direction.items():
+        for name, direction in normalize_direction.items():
             self._column_names.append(name)
-            self._column_negations.append(negation)
+            if direction == Direction.MINIMIZE:
+                self._column_negations.append(1)
+            else:
+                self._column_negations.append(-1)
 
     def _normalize(self, input_df):
         """
@@ -543,3 +566,82 @@ class GeomeanAggregate(Aggregate):
             x = x.dropna()
             return stats.gmean(x) if not x.empty else math.nan
         super().__init__(geomean)
+
+
+class CompareToFirst(Processor):
+    """
+    Processor that compares numeric rows in an evaluation to the first row by
+    adding columns that specify the relative difference between the first row
+    and all other rows.
+
+    You can specify the direction that improvements should be outputted. For
+    example, a change from `100` to `50` may be a 2x change if the objective is
+    minimization, while it may be a 0.5x change if the objective is
+    maximization.
+
+    Parameters
+    ----------
+    normalize_direction : Dict[str, Direction]
+        a dictionary mapping column names to the optimization direction of
+        the column. Used to determine if increases or decreases to baseline are
+        perceived to be 'better'.
+    suffix : str
+        the suffix to use when creating new columns that contain the relative
+        comparison to the first row, by default ".relative"
+    
+    Examples
+    --------
+    >>> a = Evaluation(pd.DataFrame(
+    ... data=[
+    ...     {"x": 1, "y": 8},
+    ...     {"x": 4, "y": 8}
+    ... ]))
+    >>> direction = {"x": Direction.MAXIMIZE, "y": Direction.MAXIMIZE}
+    >>> a.process([CompareToFirst(direction, suffix=".diff")).get_df()
+        x   x.diff  y   y.diff
+    0   1   1.00    8   1.0
+    1   4   4.00    8   1.0
+
+    >>> a = Evaluation(pd.DataFrame(
+    ... data=[
+    ...     {"x": 1, "y": 8},
+    ...     {"x": 4, "y": 8}
+    ... ]))
+    >>> direction = {"x": Direction.MINIMIZE, "y": Direction.MINIMIZE}
+    >>> a.process([CompareToFirst(direction, suffix=".diff")).get_df()
+        x   x.diff  y   y.diff
+    0   1   1.00    8   1.0
+    1   4   0.25    8   1.0
+    """
+
+    def __init__(self, normalize_direction: Dict[str, Direction], suffix: str = ".relative"):
+        self._column_names = []
+        self._column_negations = []
+        for name, direction in normalize_direction.items():
+            self._column_names.append(name)
+            if direction == Direction.MINIMIZE:
+                self._column_negations.append(-1)
+            else:
+                self._column_negations.append(1)
+
+        self._suffix = suffix
+
+    def _compare_to_first(self, input_df):
+        """
+        Given a dataframe, sets the first row as the baseline and compares all
+        rows to the first row, outputting the relative difference between each
+        value as a new column.
+        """
+        new_cols = []
+        for col in self._column_names:
+            new_cols.extend([col, col + self._suffix])
+
+        base = input_df.loc[0, self._column_names]
+        baseline_ratio = (input_df[self._column_names] / base) ** self._column_negations
+        renamed_ratio = baseline_ratio.rename(lambda col: col + self._suffix, axis=1)
+        return pd.concat([input_df, renamed_ratio], axis=1)[new_cols]
+
+    def process(self, input_eval: Evaluation) -> Evaluation:
+        input_df = input_eval.get_df()
+        new_df = self._compare_to_first(input_df)
+        return Evaluation(new_df, input_eval.get_eval_id())
