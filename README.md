@@ -46,6 +46,10 @@ make html
 * `sphinx-rtd-theme`: for documentation generation (theme) ([website](https://github.com/readthedocs/sphinx_rtd_theme))
 
 ## Changes
+### 0.2.1
+* Add support for fetching using the absolute evaluation number instead of relative
+* Add support for handling legacy Icebreaker processors
+
 ### 0.2.0
 * Added evaluation concatenation and `CompareToFirst` processors for relative comparisons between evaluations.
 * Fixed `HydraFetcher` issues when fetching an older evaluation that contains more than one build artifact.
